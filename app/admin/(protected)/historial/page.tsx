@@ -60,7 +60,7 @@ export default function HistorialPage() {
   }, [selectedId]);
 
   return (
-    <div>
+    <div className="flex-1 overflow-y-auto">
       <h1 className="text-xl font-semibold mb-1">Historial</h1>
       <p className="text-secondary text-sm mb-4">Conversaciones cerradas</p>
 
@@ -108,8 +108,8 @@ export default function HistorialPage() {
               className={
                 "text-left rounded-lg p-3 transition-colors " +
                 (selectedId === c.id
-                  ? "bg-black/5 dark:bg-white/10"
-                  : "bg-white dark:bg-[#1A1A1A] shadow-sm dark:shadow-none hover:bg-black/5 dark:hover:bg-white/5")
+                  ? "bg-black/10 dark:bg-white/10"
+                  : "bg-white dark:bg-[#1A1A1A] border border-black/10 dark:border-white/5 shadow-sm dark:shadow-none hover:bg-black/5 dark:hover:bg-white/5")
               }
             >
               <p className="text-sm font-medium">{c.metadata?.country ?? "Desconocido"}</p>
@@ -121,7 +121,7 @@ export default function HistorialPage() {
         <div
           className={
             (selectedId ? "block" : "hidden md:block") +
-            " flex-1 bg-white dark:bg-[#1A1A1A] rounded-xl p-4 min-h-[300px] shadow-sm dark:shadow-none"
+            " flex-1 bg-white dark:bg-[#1A1A1A] border border-black/10 dark:border-white/5 rounded-xl p-4 min-h-[300px] shadow-sm dark:shadow-none"
           }
         >
           {!selectedId ? (
@@ -140,7 +140,7 @@ export default function HistorialPage() {
                   className={
                     "max-w-[75%] rounded-2xl px-4 py-2 text-sm " +
                     (m.role === "user"
-                      ? "self-start bg-black/5 dark:bg-white/10"
+                      ? "self-start bg-black/10 dark:bg-white/10"
                       : m.role === "human_agent"
                       ? "self-end bg-primary text-white"
                       : "self-end bg-terciari text-negro")

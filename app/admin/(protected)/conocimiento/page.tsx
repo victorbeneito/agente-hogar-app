@@ -76,11 +76,11 @@ export default function ConocimientoPage() {
   }
 
   return (
-    <div>
+    <div className="flex-1 overflow-y-auto">
       <h1 className="text-xl font-semibold mb-1">Base de conocimiento</h1>
       <p className="text-secondary text-sm mb-6">Documentos que usa la IA para responder (RAG)</p>
 
-      <div className="bg-white dark:bg-[#1A1A1A] rounded-xl p-4 mb-6 shadow-sm dark:shadow-none">
+      <div className="bg-white dark:bg-[#1A1A1A] border border-black/10 dark:border-white/5 rounded-xl p-4 mb-6 shadow-sm dark:shadow-none">
         <p className="text-sm font-medium mb-3">{editingId ? "Editar documento" : "Nuevo documento"}</p>
         <div className="flex flex-col gap-3">
           <input
@@ -134,7 +134,7 @@ export default function ConocimientoPage() {
           {docs.map((doc) => (
             <div
               key={doc.id}
-              className="bg-white dark:bg-[#1A1A1A] rounded-xl p-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 shadow-sm dark:shadow-none"
+              className="bg-white dark:bg-[#1A1A1A] border border-black/10 dark:border-white/5 rounded-xl p-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 shadow-sm dark:shadow-none"
             >
               <div className="min-w-0">
                 <p className="font-medium text-sm">

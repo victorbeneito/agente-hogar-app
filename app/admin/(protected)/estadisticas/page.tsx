@@ -38,7 +38,7 @@ export default function EstadisticasPage() {
   }, []);
 
   return (
-    <div>
+    <div className="flex-1 overflow-y-auto">
       <h1 className="text-xl font-semibold mb-1">Estadísticas</h1>
       <p className="text-secondary text-sm mb-6">Resumen del día de hoy</p>
 
