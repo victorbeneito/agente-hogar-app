@@ -19,21 +19,45 @@ const documents = [
     category: "producto",
     title: "Estores enrollables lisos traslúcidos (Happystor Clear)",
     content:
-      "El estor enrollable Happystor Clear es un tejido traslúcido liso, disponible en dos colores: Blanco óptico y Crudo. " +
+      "El estor enrollable Happystor Clear es un tejido traslúcido liso, disponible en estos colores: Blanco óptico, Crudo, Beige, Topo, " +
+      "Gris Marrón, Naranja, Burdeos, Marfil, Lila, Pistacho, Celeste, Morado, Rosa, Marrón Pastel, Verde Pastel y Gris Pastel " +
+      "(la disponibilidad de cada color puede variar según el stock en cada momento, algún tono puntual puede estar agotado temporalmente). " +
       "Precio desde 17,59€ (precio base 20,70€, con descuento habitual aplicado), variando según las medidas elegidas. " +
       "Se fabrica a medida en anchos y alturas desde 50x175 cm hasta 180x250 cm aproximadamente. " +
       "Para encargarlo correctamente, el cliente debe indicar el ancho y alto exactos del hueco o marco donde se instalará.",
   },
   {
     category: "producto",
-    title: "Otros estores enrollables Happystor (Día y Noche, opacos, EasyFix)",
+    title: "Estores Día y Noche Happystor (Night, Wave, TriNight, Day)",
     content:
-      "Además del Happystor Clear (traslúcido liso), la tienda tiene otras variantes de estor enrollable Happystor: " +
-      "Happystor Night, Happystor Wave, Happystor TriNight y Happystor Day (tejido día y noche, con franjas que alternan zonas opacas y translúcidas), " +
-      "Happystor Door Dark (opaco) y Happystor Door Clear (traslúcido), ambos con instalación EasyFix sin taladrar, " +
-      "Happystor Nature (tejido traslúcido tipo lino) y Happystor Light / Happystor Dark (tejido screen y tejido opaco liso). " +
-      "Los colores disponibles varían según el modelo. Si el cliente pregunta por un color o acabado concreto que no aparece aquí, " +
-      "indícale que pulse el botón de hablar con una persona para que el equipo se lo confirme con el catálogo completo.",
+      "Estores enrollables tipo 'noche y día' (franjas que alternan zonas opacas y translúcidas para regular la luz): " +
+      "Happystor Night, color Crema, desde 31,42€. " +
+      "Happystor Wave, colores Crema y Gris, desde 45,95€. " +
+      "Happystor TriNight, colores Gris-Pistacho, Marrón-Crema, Marrón-Gris y Marrón-Violeta, desde 36,31€. " +
+      "Happystor Day, colores Crema, Crudo y Gris, desde 45,63€. " +
+      "Todos se fabrican a medida; el cliente debe indicar el ancho y alto exactos del hueco o marco donde se instalará. " +
+      "La disponibilidad de cada color y talla puede variar según el stock en cada momento.",
+  },
+  {
+    category: "producto",
+    title: "Estores EasyFix Happystor (instalación sin taladrar, Door Dark/Clear/N&D)",
+    content:
+      "Estores enrollables con instalación EasyFix (se sujetan a presión, sin necesidad de taladrar la pared o el marco): " +
+      "Happystor Door Dark (tejido opaco), color Crudo, desde 15,90€. " +
+      "Happystor Door Clear (tejido traslúcido), color Crudo, desde 13,51€. " +
+      "Happystor Door N&D (tejido día y noche), colores Crema y Crudo, desde 18,36€. " +
+      "Son ideales para puertas o ventanas donde no se quiere hacer ningún agujero. " +
+      "La disponibilidad de cada color y talla puede variar según el stock en cada momento.",
+  },
+  {
+    category: "producto",
+    title: "Estores Happystor Nature, Light y Dark",
+    content:
+      "Happystor Nature: tejido traslúcido tipo lino, color Lino, desde 28,22€. " +
+      "Happystor Light: tejido screen liso, colores Maquillaje, Marengo, Antracita y Marfil, desde 27,68€. " +
+      "Happystor Dark: tejido opaco liso, colores Crudo, Beige, Marfil y Topo, desde 25,42€. " +
+      "Todos se fabrican a medida; el cliente debe indicar el ancho y alto exactos del hueco o marco donde se instalará. " +
+      "La disponibilidad de cada color y talla puede variar según el stock en cada momento.",
   },
   {
     category: "producto",
