@@ -69,19 +69,19 @@ export default function HistorialPage() {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Buscar por contenido..."
-          className="flex-1 min-w-[200px] rounded-lg bg-[#1A1A1A] border border-white/10 px-4 py-2 text-sm outline-none focus:border-primary"
+          className="flex-1 min-w-[200px] rounded-lg bg-white dark:bg-[#1A1A1A] border border-black/10 dark:border-white/10 px-4 py-2 text-sm outline-none focus:border-primary"
         />
         <input
           type="date"
           value={from}
           onChange={(e) => setFrom(e.target.value)}
-          className="rounded-lg bg-[#1A1A1A] border border-white/10 px-4 py-2 text-sm outline-none focus:border-primary"
+          className="rounded-lg bg-white dark:bg-[#1A1A1A] border border-black/10 dark:border-white/10 px-4 py-2 text-sm outline-none focus:border-primary"
         />
         <input
           type="date"
           value={to}
           onChange={(e) => setTo(e.target.value)}
-          className="rounded-lg bg-[#1A1A1A] border border-white/10 px-4 py-2 text-sm outline-none focus:border-primary"
+          className="rounded-lg bg-white dark:bg-[#1A1A1A] border border-black/10 dark:border-white/10 px-4 py-2 text-sm outline-none focus:border-primary"
         />
         <button
           onClick={search}
@@ -107,7 +107,9 @@ export default function HistorialPage() {
               onClick={() => setSelectedId(c.id)}
               className={
                 "text-left rounded-lg p-3 transition-colors " +
-                (selectedId === c.id ? "bg-white/10" : "bg-[#1A1A1A] hover:bg-white/5")
+                (selectedId === c.id
+                  ? "bg-black/5 dark:bg-white/10"
+                  : "bg-white dark:bg-[#1A1A1A] shadow-sm dark:shadow-none hover:bg-black/5 dark:hover:bg-white/5")
               }
             >
               <p className="text-sm font-medium">{c.metadata?.country ?? "Desconocido"}</p>
@@ -119,7 +121,7 @@ export default function HistorialPage() {
         <div
           className={
             (selectedId ? "block" : "hidden md:block") +
-            " flex-1 bg-[#1A1A1A] rounded-xl p-4 min-h-[300px]"
+            " flex-1 bg-white dark:bg-[#1A1A1A] rounded-xl p-4 min-h-[300px] shadow-sm dark:shadow-none"
           }
         >
           {!selectedId ? (
@@ -128,7 +130,7 @@ export default function HistorialPage() {
             <div className="flex flex-col gap-3">
               <button
                 onClick={() => setSelectedId(null)}
-                className="md:hidden self-start text-secondary hover:text-fondo text-sm mb-1"
+                className="md:hidden self-start text-secondary hover:text-negro dark:hover:text-fondo text-sm mb-1"
               >
                 ← Volver al historial
               </button>
@@ -138,7 +140,7 @@ export default function HistorialPage() {
                   className={
                     "max-w-[75%] rounded-2xl px-4 py-2 text-sm " +
                     (m.role === "user"
-                      ? "self-start bg-white/10"
+                      ? "self-start bg-black/5 dark:bg-white/10"
                       : m.role === "human_agent"
                       ? "self-end bg-primary text-white"
                       : "self-end bg-terciari text-negro")

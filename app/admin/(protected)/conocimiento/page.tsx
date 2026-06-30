@@ -80,19 +80,19 @@ export default function ConocimientoPage() {
       <h1 className="text-xl font-semibold mb-1">Base de conocimiento</h1>
       <p className="text-secondary text-sm mb-6">Documentos que usa la IA para responder (RAG)</p>
 
-      <div className="bg-[#1A1A1A] rounded-xl p-4 mb-6">
+      <div className="bg-white dark:bg-[#1A1A1A] rounded-xl p-4 mb-6 shadow-sm dark:shadow-none">
         <p className="text-sm font-medium mb-3">{editingId ? "Editar documento" : "Nuevo documento"}</p>
         <div className="flex flex-col gap-3">
           <input
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
             placeholder="Título"
-            className="rounded-lg bg-[#2D2D2D] border border-white/10 px-4 py-2 text-sm outline-none focus:border-primary"
+            className="rounded-lg bg-fondo dark:bg-[#2D2D2D] border border-black/10 dark:border-white/10 px-4 py-2 text-sm outline-none focus:border-primary"
           />
           <select
             value={form.category}
             onChange={(e) => setForm({ ...form, category: e.target.value })}
-            className="rounded-lg bg-[#2D2D2D] border border-white/10 px-4 py-2 text-sm outline-none focus:border-primary"
+            className="rounded-lg bg-fondo dark:bg-[#2D2D2D] border border-black/10 dark:border-white/10 px-4 py-2 text-sm outline-none focus:border-primary"
           >
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>
@@ -105,7 +105,7 @@ export default function ConocimientoPage() {
             onChange={(e) => setForm({ ...form, content: e.target.value })}
             placeholder="Contenido"
             rows={4}
-            className="rounded-lg bg-[#2D2D2D] border border-white/10 px-4 py-2 text-sm outline-none focus:border-primary resize-y"
+            className="rounded-lg bg-fondo dark:bg-[#2D2D2D] border border-black/10 dark:border-white/10 px-4 py-2 text-sm outline-none focus:border-primary resize-y"
           />
           <div className="flex gap-2">
             <button
@@ -116,7 +116,10 @@ export default function ConocimientoPage() {
               {saving ? "Guardando..." : editingId ? "Guardar cambios" : "Añadir documento"}
             </button>
             {editingId && (
-              <button onClick={cancelEdit} className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-sm">
+              <button
+                onClick={cancelEdit}
+                className="px-4 py-2 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-sm"
+              >
                 Cancelar
               </button>
             )}
@@ -131,7 +134,7 @@ export default function ConocimientoPage() {
           {docs.map((doc) => (
             <div
               key={doc.id}
-              className="bg-[#1A1A1A] rounded-xl p-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4"
+              className="bg-white dark:bg-[#1A1A1A] rounded-xl p-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 shadow-sm dark:shadow-none"
             >
               <div className="min-w-0">
                 <p className="font-medium text-sm">
@@ -142,7 +145,7 @@ export default function ConocimientoPage() {
               <div className="flex gap-2 shrink-0">
                 <button
                   onClick={() => startEdit(doc)}
-                  className="text-xs px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10"
+                  className="text-xs px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10"
                 >
                   Editar
                 </button>

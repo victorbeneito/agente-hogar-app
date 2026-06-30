@@ -129,7 +129,9 @@ export default function ConversacionesPage() {
                 "text-left rounded-lg p-3 border-l-4 transition-colors " +
                 (c.status === "waiting_human" ? "border-accent" : "border-primary") +
                 " " +
-                (selectedId === c.id ? "bg-white/10" : "bg-[#1A1A1A] hover:bg-white/5")
+                (selectedId === c.id
+                  ? "bg-black/5 dark:bg-white/10"
+                  : "bg-white dark:bg-[#1A1A1A] shadow-sm dark:shadow-none hover:bg-black/5 dark:hover:bg-white/5")
               }
             >
               <p className="text-sm font-medium">{c.metadata?.country ?? "Desconocido"}</p>
@@ -145,7 +147,7 @@ export default function ConversacionesPage() {
       <div
         className={
           (selectedId ? "flex" : "hidden md:flex") +
-          " flex-1 bg-[#1A1A1A] rounded-xl flex-col overflow-hidden"
+          " flex-1 bg-white dark:bg-[#1A1A1A] rounded-xl flex-col overflow-hidden shadow-sm dark:shadow-none"
         }
       >
         {!selected ? (
@@ -154,12 +156,12 @@ export default function ConversacionesPage() {
           </div>
         ) : (
           <>
-            <div className="p-4 border-b border-white/10 flex items-center justify-between gap-2">
+            <div className="p-4 border-b border-black/10 dark:border-white/10 flex items-center justify-between gap-2">
               <div className="flex items-center gap-2 min-w-0">
                 <button
                   onClick={() => setSelectedId(null)}
                   aria-label="Volver a la lista"
-                  className="md:hidden shrink-0 text-secondary hover:text-fondo p-1"
+                  className="md:hidden shrink-0 text-secondary hover:text-negro dark:hover:text-fondo p-1"
                 >
                   ←
                 </button>
@@ -173,13 +175,13 @@ export default function ConversacionesPage() {
               <div className="flex gap-2 shrink-0">
                 <button
                   onClick={() => updateStatus("bot")}
-                  className="text-xs px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10"
+                  className="text-xs px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10"
                 >
                   Devolver al bot
                 </button>
                 <button
                   onClick={() => updateStatus("closed")}
-                  className="text-xs px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10"
+                  className="text-xs px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10"
                 >
                   Cerrar
                 </button>
@@ -193,7 +195,7 @@ export default function ConversacionesPage() {
                   className={
                     "max-w-[75%] rounded-2xl px-4 py-2 text-sm " +
                     (m.role === "user"
-                      ? "self-start bg-white/10"
+                      ? "self-start bg-black/5 dark:bg-white/10"
                       : m.role === "human_agent"
                       ? "self-end bg-primary text-white"
                       : "self-end bg-terciari text-negro")
@@ -208,13 +210,13 @@ export default function ConversacionesPage() {
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="p-3 border-t border-white/10 flex gap-2">
+            <div className="p-3 border-t border-black/10 dark:border-white/10 flex gap-2">
               <input
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
                 placeholder="Escribe como agente humano..."
-                className="flex-1 rounded-lg bg-[#2D2D2D] border border-white/10 px-4 py-2 text-sm outline-none focus:border-primary"
+                className="flex-1 rounded-lg bg-fondo dark:bg-[#2D2D2D] border border-black/10 dark:border-white/10 px-4 py-2 text-sm outline-none focus:border-primary"
               />
               <button
                 onClick={handleSend}

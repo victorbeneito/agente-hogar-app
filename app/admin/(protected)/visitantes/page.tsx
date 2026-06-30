@@ -65,7 +65,7 @@ export default function VisitantesPage() {
           {visitors.map((v) => (
             <div
               key={v.id}
-              className="bg-[#1A1A1A] rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4"
+              className="bg-white dark:bg-[#1A1A1A] rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 shadow-sm dark:shadow-none"
             >
               <div className="flex items-center gap-3 min-w-0">
                 <span className="text-2xl shrink-0">{flag(v.country_code)}</span>

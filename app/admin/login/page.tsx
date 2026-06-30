@@ -29,12 +29,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#1A1A1A] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-fondo dark:bg-[#1A1A1A] px-4">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-[#2D2D2D] rounded-2xl p-8 shadow-xl"
+        className="w-full max-w-sm bg-white dark:bg-[#2D2D2D] rounded-2xl p-8 shadow-xl"
       >
-        <h1 className="text-fondo text-2xl font-semibold mb-1">El Hogar de Tus Sueños</h1>
+        <h1 className="text-negro dark:text-fondo text-2xl font-semibold mb-1">El Hogar de Tus Sueños</h1>
         <p className="text-secondary text-sm mb-6">Panel de administración</p>
 
         <input
@@ -43,7 +43,7 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Contraseña"
           autoFocus
-          className="w-full rounded-lg bg-[#1A1A1A] border border-secondary text-fondo px-4 py-3 mb-4 outline-none focus:border-primary"
+          className="w-full rounded-lg bg-fondo dark:bg-[#1A1A1A] border border-secondary text-negro dark:text-fondo px-4 py-3 mb-4 outline-none focus:border-primary"
         />
 
         {error && <p className="text-accent text-sm mb-4">{error}</p>}

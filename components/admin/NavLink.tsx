@@ -22,8 +22,8 @@ export default function NavLink({
       className={
         "px-3 py-2 rounded-lg text-sm transition-colors border-l-4 " +
         (active
-          ? "bg-white/5 text-fondo border-primary"
-          : "text-secondary border-transparent hover:bg-white/5 hover:text-fondo")
+          ? "bg-black/5 dark:bg-white/5 text-negro dark:text-fondo border-primary"
+          : "text-secondary border-transparent hover:bg-black/5 dark:hover:bg-white/5 hover:text-negro dark:hover:text-fondo")
       }
     >
       {label}
