@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import OpenAI from "openai";
 import { supabaseAdmin } from "@/lib/supabase";
-import { openai, CHAT_MODEL, EMBEDDING_MODEL } from "@/lib/openai";
+import { openai, CHAT_MODEL } from "@/lib/openai";
 import { getOrCreateConversation, notifyNewChat, triggerHandoff } from "@/lib/conversations";
-import { detectHandoffIntent } from "@/lib/handoff";
+import { searchKnowledgeBase } from "@/lib/rag";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -10,8 +11,7 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
-const MATCH_THRESHOLD = 0.35;
-const MATCH_COUNT = 6;
+const MAX_AGENT_STEPS = 4;
 
 const SYSTEM_PROMPT = `Hablas en nombre de "El Hogar de Tus Sueños", una tienda online de textil y decoración para el hogar
 (estores enrollables, ropa de cama, fundas de sofá, cojines, accesorios). Eres cercano y conversacional, como una
@@ -20,13 +20,60 @@ ni repetir coletillas tipo "soy el asistente virtual" en cada mensaje. Responde 
 
 Puedes usar tu conocimiento general para charlar con naturalidad, dar consejos de decoración, explicar cómo funciona
 un estor enrollable, ayudar a elegir colores o combinaciones, opinar, o resolver dudas generales que no dependan de
-datos concretos de la tienda. Para eso no necesitas el contexto, responde con soltura.
+datos concretos de la tienda. Para eso no necesitas buscar nada, responde con soltura.
 
 Para datos CONCRETOS y específicos de El Hogar de Tus Sueños (colores y modelos exactos en catálogo, precios, tallas,
-plazos de envío, políticas de devolución, métodos de pago, horario o contacto) básate únicamente en el contexto
-proporcionado abajo: no inventes cifras, colores ni políticas que no aparezcan ahí. Si no tienes ese dato concreto,
-dilo con naturalidad (sin sonar como un mensaje de error) y ofrece pulsar el botón "🙋 Hablar con una persona" que
-aparece justo debajo de la conversación para que el equipo lo confirme.`;
+plazos de envío, políticas de devolución, métodos de pago, horario o contacto) usa la herramienta "buscar_en_catalogo"
+antes de responder, no inventes cifras, colores ni políticas. Puedes llamarla varias veces si la pregunta toca varios
+temas. Si tras buscar no encuentras el dato, dilo con naturalidad (sin sonar a mensaje de error).
+
+Usa la herramienta "escalar_a_persona" cuando el cliente lo pida explícitamente, esté frustrado o insatisfecho con
+tus respuestas, necesite algo que no puedas resolver con la información disponible (precio fuera de catálogo, estado
+de un pedido concreto, una reclamación o un defecto), o cuando tras un par de intentos no consigas resolver su duda.
+No hace falta que se lo digas tú mismo con un botón: la herramienta ya conecta la conversación con el equipo, así
+que tras llamarla simplemente confírmaselo al cliente de forma natural y cercana.`;
+
+const TOOLS: OpenAI.Chat.Completions.ChatCompletionTool[] = [
+  {
+    type: "function",
+    function: {
+      name: "buscar_en_catalogo",
+      description:
+        "Busca información concreta de El Hogar de Tus Sueños en la base de conocimiento de la tienda: productos, " +
+        "colores, precios, tallas, envíos, devoluciones, pagos o contacto. Úsala siempre que necesites un dato " +
+        "concreto de la tienda que no sepas con certeza por la conversación.",
+      parameters: {
+        type: "object",
+        properties: {
+          consulta: {
+            type: "string",
+            description: "Qué buscar, en texto natural. Ej: 'colores happystor clear', 'plazos de envío a Canarias'.",
+          },
+        },
+        required: ["consulta"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "escalar_a_persona",
+      description:
+        "Conecta la conversación con una persona real del equipo de El Hogar de Tus Sueños. Tras llamarla, alguien " +
+        "del equipo atenderá al cliente directamente en este mismo chat.",
+      parameters: {
+        type: "object",
+        properties: {
+          motivo: {
+            type: "string",
+            description: "Breve motivo del escalado, para que el equipo tenga contexto al entrar.",
+          },
+        },
+        required: ["motivo"],
+      },
+    },
+  },
+];
 
 export function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: CORS_HEADERS });
@@ -99,39 +146,6 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (detectHandoffIntent(message)) {
-    await triggerHandoff(conversation.id);
-
-    const ackReply = "Entendido, te conecto con una persona de nuestro equipo lo antes posible. En unos minutos te atenderán por aquí mismo.";
-    await supabaseAdmin.from("messages").insert({
-      conversation_id: conversation.id,
-      role: "assistant",
-      content: ackReply,
-    });
-
-    return NextResponse.json(
-      { reply: ackReply, status: "waiting_human" },
-      { headers: CORS_HEADERS }
-    );
-  }
-
-  // RAG: embeber el mensaje y recuperar documentos relevantes de knowledge_base
-  const embeddingRes = await openai.embeddings.create({
-    model: EMBEDDING_MODEL,
-    input: message,
-  });
-  const queryEmbedding = embeddingRes.data[0].embedding;
-
-  const { data: matches } = await supabaseAdmin.rpc("match_documents", {
-    query_embedding: queryEmbedding,
-    match_threshold: MATCH_THRESHOLD,
-    match_count: MATCH_COUNT,
-  });
-
-  const context = (matches ?? [])
-    .map((m: { title: string; content: string }) => `### ${m.title}\n${m.content}`)
-    .join("\n\n");
-
   const { data: history } = await supabaseAdmin
     .from("messages")
     .select("role, content")
@@ -139,25 +153,68 @@ export async function POST(request: NextRequest) {
     .order("created_at", { ascending: true })
     .limit(10);
 
-  const completion = await openai.chat.completions.create({
-    model: CHAT_MODEL,
-    temperature: 0.8,
-    messages: [
-      { role: "system", content: SYSTEM_PROMPT },
-      {
-        role: "system",
-        content: context
-          ? `Contexto relevante de la base de conocimiento:\n\n${context}`
-          : "No se ha encontrado contexto relevante en la base de conocimiento para esta pregunta. Si la pregunta es general (no depende de datos concretos de la tienda), respóndela igualmente con tu conocimiento general.",
-      },
-      ...(history ?? []).map((m) => ({
-        role: (m.role === "human_agent" ? "assistant" : m.role) as "user" | "assistant",
-        content: m.content,
-      })),
-    ],
-  });
+  const workingMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+    { role: "system", content: SYSTEM_PROMPT },
+    ...(history ?? []).map((m) => ({
+      role: (m.role === "human_agent" ? "assistant" : m.role) as "user" | "assistant",
+      content: m.content,
+    })),
+  ];
 
-  const reply = completion.choices[0]?.message?.content?.trim() ?? "Lo siento, no he podido procesar tu mensaje. ¿Puedes reformularlo?";
+  let handoffTriggered = false;
+  let reply: string | null = null;
+
+  for (let step = 0; step < MAX_AGENT_STEPS; step++) {
+    const completion = await openai.chat.completions.create({
+      model: CHAT_MODEL,
+      temperature: 0.8,
+      tools: TOOLS,
+      tool_choice: "auto",
+      messages: workingMessages,
+    });
+
+    const choice = completion.choices[0]?.message;
+    if (!choice) break;
+
+    workingMessages.push(choice);
+
+    if (!choice.tool_calls || choice.tool_calls.length === 0) {
+      reply = choice.content?.trim() || null;
+      break;
+    }
+
+    for (const call of choice.tool_calls) {
+      if (call.type !== "function") continue;
+
+      let result: unknown;
+      try {
+        const args = JSON.parse(call.function.arguments || "{}");
+
+        if (call.function.name === "buscar_en_catalogo") {
+          const docs = await searchKnowledgeBase(String(args.consulta ?? message));
+          result = docs.length > 0 ? docs : { info: "Sin resultados relevantes en la base de conocimiento." };
+        } else if (call.function.name === "escalar_a_persona") {
+          await triggerHandoff(conversation.id);
+          handoffTriggered = true;
+          result = { ok: true, info: "Conversación escalada, el equipo la atenderá en este chat." };
+        } else {
+          result = { error: "Herramienta desconocida." };
+        }
+      } catch {
+        result = { error: "No se pudo ejecutar la herramienta." };
+      }
+
+      workingMessages.push({
+        role: "tool",
+        tool_call_id: call.id,
+        content: JSON.stringify(result),
+      });
+    }
+  }
+
+  if (!reply) {
+    reply = "Lo siento, no he podido procesar tu mensaje. ¿Puedes reformularlo?";
+  }
 
   await supabaseAdmin.from("messages").insert({
     conversation_id: conversation.id,
@@ -165,5 +222,8 @@ export async function POST(request: NextRequest) {
     content: reply,
   });
 
-  return NextResponse.json({ reply, status: "bot" }, { headers: CORS_HEADERS });
+  return NextResponse.json(
+    { reply, status: handoffTriggered ? "waiting_human" : "bot" },
+    { headers: CORS_HEADERS }
+  );
 }
