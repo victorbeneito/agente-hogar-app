@@ -17,79 +17,101 @@ const EMBEDDING_MODEL = "text-embedding-3-small";
 const documents = [
   {
     category: "producto",
-    title: "Estores enrollables lisos",
+    title: "Estores enrollables lisos traslúcidos (Happystor Clear)",
     content:
-      "Los estores enrollables lisos están disponibles en varios colores: blanco, beige, gris, negro y crudo. " +
-      "Para medir el hueco de tu ventana, mide el ancho y alto exactos en milímetros del hueco o del marco donde quieras instalarlo (interior o exterior), e indícanos si el montaje será dentro del hueco o sobre la pared. " +
-      "El precio orientativo es de aproximadamente 25-35€ por m², variando según el tejido elegido (translúcido, opaco o blackout). " +
-      "El plazo de fabricación es de 2-3 días laborables antes del envío.",
+      "El estor enrollable Happystor Clear es un tejido traslúcido liso, disponible en dos colores: Blanco óptico y Crudo. " +
+      "Precio desde 17,59€ (precio base 20,70€, con descuento habitual aplicado), variando según las medidas elegidas. " +
+      "Se fabrica a medida en anchos y alturas desde 50x175 cm hasta 180x250 cm aproximadamente. " +
+      "Para encargarlo correctamente, el cliente debe indicar el ancho y alto exactos del hueco o marco donde se instalará.",
+  },
+  {
+    category: "producto",
+    title: "Otros estores enrollables Happystor (Día y Noche, opacos, EasyFix)",
+    content:
+      "Además del Happystor Clear (traslúcido liso), la tienda tiene otras variantes de estor enrollable Happystor: " +
+      "Happystor Night, Happystor Wave, Happystor TriNight y Happystor Day (tejido día y noche, con franjas que alternan zonas opacas y translúcidas), " +
+      "Happystor Door Dark (opaco) y Happystor Door Clear (traslúcido), ambos con instalación EasyFix sin taladrar, " +
+      "Happystor Nature (tejido traslúcido tipo lino) y Happystor Light / Happystor Dark (tejido screen y tejido opaco liso). " +
+      "Los colores disponibles varían según el modelo. Si el cliente pregunta por un color o acabado concreto que no aparece aquí, " +
+      "indícale que pulse el botón de hablar con una persona para que el equipo se lo confirme con el catálogo completo.",
   },
   {
     category: "producto",
     title: "Estores enrollables digitales (personalizados con foto)",
     content:
-      "Los estores enrollables digitales se personalizan con la imagen, foto o diseño que nos envíes. " +
-      "Para garantizar buena calidad de impresión, la foto debe tener una resolución mínima de 300 ppp (píxeles por pulgada) al tamaño final del estor; recomendamos imágenes de al menos 3000x2000 píxeles. " +
-      "Aceptamos formatos JPG, PNG y PDF. Los estores digitales están disponibles en acabado translúcido o blackout. " +
-      "El precio orientativo es de 35-45€ por m², algo superior al estor liso por el proceso de impresión digital. " +
-      "El plazo de fabricación es de 3-4 días laborables, ya que incluye revisión y aprobación del diseño antes de imprimir.",
+      "Los estores digitales personalizados se fabrican con tejido traslúcido sobre el que se imprime la foto o diseño que envía el cliente, " +
+      "en modelos de las marcas Happystor y Blindecor. El precio base habitual es de 122,55€, con descuentos frecuentes que lo dejan en torno a 55€. " +
+      "No hay publicados en la web los requisitos técnicos exactos de resolución mínima o formatos de archivo aceptados para la foto: " +
+      "si el cliente pregunta por esto, indícale que el equipo le confirmará el proceso de envío de la imagen al hacer el pedido, " +
+      "o que pulse el botón de hablar con una persona.",
   },
   {
     category: "producto",
-    title: "Colchas",
+    title: "Ropa de cama: fundas nórdicas, sábanas y fundas de almohada",
     content:
-      "Nuestras colchas están disponibles en tallas 90, 105, 135, 150 y 180 cm (adaptadas al ancho de cama). " +
-      "Los materiales disponibles son algodón 100%, mezcla de algodón-poliéster y modelos acolchados (boutí). " +
-      "Cuidados: se recomienda lavado a máquina en frío (30°), no usar lejía y secar a baja temperatura o al aire para conservar mejor los colores y la forma.",
+      "En la categoría de dormitorio hay varias líneas de ropa de cama: Juego de funda nórdica 200 hilos doble pespunte (91,80€), " +
+      "Funda nórdica 300 hilos (89,00€), Juego de sábanas 200 hilos doble pespunte (71,80€), Bajera ajustable 300 hilos (54,60€), " +
+      "Funda de almohada 300 hilos vainica o doble pespunte (21,40€ cada una). También hay edredones tipo stonewash (desde 28,80€) " +
+      "y juegos de gama alta como el Js 300 hilos Luna/Valeria (127,20€). Los precios concretos varían según la talla de la cama.",
   },
   {
     category: "producto",
-    title: "Fundas de sofá",
+    title: "Cojines y complementos textiles",
     content:
-      "Las fundas de sofá están disponibles para medidas estándar de 1, 2, 3 y hasta 4 plazas, así como modelos en chaise longue. " +
-      "Recomendamos medir el ancho total del respaldo y el fondo del asiento antes de elegir la talla. " +
-      "Los materiales disponibles incluyen tejidos elásticos ajustables y tejidos antimanchas. " +
-      "Instrucciones de lavado: lavado a máquina en frío (30°), sin lejía, secado a baja temperatura; se recomienda plancharlas ligeramente húmedas para eliminar arrugas.",
+      "También hay fundas de cojín en varios acabados: Funda de cojín 200 hilos doble pespunte (24,20€), " +
+      "Funda de cojín 300 hilos vainica (34,60€), Funda de cojín jacquard (16,20€), y pies de cama (38,00€).",
   },
   {
     category: "producto",
-    title: "Fundas nórdicas",
+    title: "Fundas de sofá elásticas",
     content:
-      "Las fundas nórdicas están disponibles en tallas 90, 105, 135, 150 y 180/200 cm, a juego con funda de almohada. " +
-      "Los rellenos disponibles (si se compran en pack) son fibra hueca siliconada de diferentes gramajes (250g, 300g y 400g) para distintas estaciones. " +
-      "Cuidados: lavado a máquina en frío (30°), no usar lejía, secado a baja temperatura. Se recomienda lavar antes del primer uso.",
+      "Las fundas de sofá son elásticas y ajustables, de las marcas Belmarti (línea PatternFit: Elegant 70,12€, Milan 54,87€, Toronto 38,39€) " +
+      "y Martina Home (Tívoli 50,32€, Azores 46,59€, Malta 46,59€, Tunez 32,19€). El precio varía según el modelo y el número de plazas del sofá. " +
+      "También hay disponibles mantas (Manta Braids acrílico, 79,20€) y artículos multiusos (19,20€).",
+  },
+  {
+    category: "producto",
+    title: "Accesorios y piezas para estores enrollables",
+    content:
+      "Para los estores enrollables hay accesorios de instalación y ajuste disponibles por separado: cambio de tamaño de tubo " +
+      "(de 28\" a 38\" o de 38\" a 43\", 18,15€ cada cambio), soporte de 10cm para tubo de 38\" (18,15€), soporte en forma de T " +
+      "para unir dos estores de 38mm/43mm (18,15€), alargador de soporte de 12cm (4,60€), separadores de pared de 12cm (4,60€) y " +
+      "9cm (4,23€). También se ofrece el servicio de modificación y ajuste de fotografía para diseños personalizados (30,25€).",
   },
   {
     category: "envio",
-    title: "Plazos y condiciones de envío",
+    title: "Plazos y costes de envío",
     content:
-      "El plazo total estimado de entrega es de 2-3 días de fabricación más 24-48h de transporte una vez el pedido sale de nuestro almacén (algo mayor para productos personalizados como los estores digitales). " +
-      "Trabajamos con transportistas de referencia nacional y todos los envíos incluyen número de seguimiento que recibirás por email/SMS en cuanto el pedido sea recogido por el transportista. " +
-      "El envío es gratuito a partir de 60€ de compra; por debajo de ese importe se aplica un coste de envío estándar calculado en el checkout según destino.",
+      "El coste de envío a la Península es de 6,95€, gratuito en compras superiores a 59,95€. El plazo es de 2-3 días para envío urgente " +
+      "o de 5-10 días para envío estándar, con la empresa de transporte Envialia. A Baleares el envío cuesta 14,95€. " +
+      "A Canarias, Ceuta y Melilla el envío cuesta 34,95€ con un plazo de 7-10 días a través de Correos. " +
+      "Los pedidos realizados antes de las 23:00h se envían al día siguiente.",
   },
   {
     category: "devolucion",
-    title: "Política de devoluciones",
+    title: "Política de devoluciones y cambios",
     content:
-      "Los productos estándar (no personalizados) tienen un plazo de devolución de 30 días naturales desde la recepción del pedido, siempre que el artículo esté sin usar y en su embalaje original. " +
-      "Los productos a medida o personalizados (como estores enrollables a medida o estores digitales con foto) no admiten devolución salvo que exista un defecto de fabricación, dado que se fabrican específicamente para cada cliente. " +
-      "Para iniciar una devolución o notificar un defecto, contacta con nuestro equipo indicando el número de pedido.",
+      "Los productos estándar se pueden cambiar o devolver dentro de los 14 días naturales desde la recepción del pedido, " +
+      "siempre que estén en perfecto estado y con su embalaje original. Los gastos de envío de la devolución corren a cargo del cliente, " +
+      "salvo que el producto sea defectuoso. El reembolso cubre el coste del producto, no los gastos de envío originales. " +
+      "Los productos hechos a medida (como estores enrollables a medida o personalizados con foto) NO admiten devolución, salvo defecto de fabricación. " +
+      "Todos los productos cuentan con 2 años de garantía por defectos de fabricación.",
   },
   {
     category: "faq",
     title: "Métodos de pago y seguridad",
     content:
-      "Aceptamos pago con tarjeta de crédito/débito (Visa, Mastercard), PayPal y transferencia bancaria. " +
-      "Todos los pagos con tarjeta se procesan de forma segura mediante pasarelas de pago certificadas, sin que almacenemos los datos de tu tarjeta en nuestros servidores. " +
-      "Recibirás la factura de tu pedido por email automáticamente tras confirmarse el pago.",
+      "Se acepta pago con tarjeta de crédito/débito (a través de la pasarela segura del Banco Sabadell), PayPal, transferencia bancaria " +
+      "y contrarreembolso (con un coste adicional de 3€ más el 3% del importe del pedido). Todos los datos de pago se transmiten de forma " +
+      "encriptada a través de pasarelas de pago seguras; la tienda no almacena los datos de la tarjeta.",
   },
   {
     category: "empresa",
     title: "Contacto y horario de atención",
     content:
-      "Puedes contactar con El Hogar de Tus Sueños por email o teléfono. " +
-      "Nuestro horario de atención al cliente es de lunes a viernes, en horario comercial. " +
-      "Para consultas urgentes sobre pedidos en curso, indícanos siempre tu número de pedido para agilizar la respuesta.",
+      "El Hogar de Tus Sueños atiende por teléfono en el 961 154 226 o en el móvil/WhatsApp 684 004 525, en horario de 10:00 a 14:00 " +
+      "y de 17:00 a 20:00. También se puede contactar por email a info@elhogardetusuenos.com. Para pedidos se recomienda hacerlos a través " +
+      "de la web para evitar confusiones. La empresa está ubicada en Partida La Solana, 30, 46870 Ontinyent (Valencia).",
   },
 ];
 

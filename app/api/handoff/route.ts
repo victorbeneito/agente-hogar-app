@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabase";
-import { triggerHandoff } from "@/lib/conversations";
+import { getOrCreateConversation, notifyNewChat, triggerHandoff } from "@/lib/conversations";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -23,17 +22,10 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { data: conversation } = await supabaseAdmin
-    .from("conversations")
-    .select("id")
-    .eq("session_id", sessionId)
-    .maybeSingle();
+  const conversation = await getOrCreateConversation(sessionId);
 
-  if (!conversation) {
-    return NextResponse.json(
-      { error: "Conversación no encontrada" },
-      { status: 404, headers: CORS_HEADERS }
-    );
+  if (conversation.isNew) {
+    await notifyNewChat(conversation.visitorCountry, conversation.visitorCountryCode, "(solicita hablar con una persona directamente)");
   }
 
   await triggerHandoff(conversation.id);

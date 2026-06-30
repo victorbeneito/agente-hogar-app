@@ -48,6 +48,14 @@
     " background: " + COLORS.primary + "; box-shadow: 0 8px 24px rgba(0,0,0,0.18); cursor: pointer; z-index: 999999;" +
     " display: flex; align-items: center; justify-content: center; transition: background 0.2s, transform 0.15s; border: none; }" +
     "#ehts-bubble:hover { background: " + COLORS.hover + "; transform: scale(1.05); }" +
+    "#ehts-teaser { position: fixed; bottom: 34px; right: 96px; max-width: 200px; background: " + COLORS.accent + ";" +
+    " color: #fff; font-size: 13px; font-weight: 500; padding: 10px 14px; border-radius: 14px; box-shadow: 0 6px 18px rgba(0,0,0,0.18);" +
+    " z-index: 999999; display: none; align-items: center; gap: 6px; cursor: pointer; opacity: 0; transform: translateY(6px);" +
+    " transition: opacity 0.25s, transform 0.25s; }" +
+    "#ehts-teaser.show { display: flex; opacity: 1; transform: translateY(0); }" +
+    "#ehts-teaser-close { background: transparent; border: none; color: #fff; opacity: 0.8; font-size: 14px; line-height: 1;" +
+    " cursor: pointer; padding: 0 0 0 4px; flex-shrink: 0; }" +
+    "#ehts-teaser-close:hover { opacity: 1; }" +
     "#ehts-window { position: fixed; bottom: 96px; right: 24px; width: 360px; max-width: calc(100vw - 32px); height: 520px;" +
     " max-height: calc(100vh - 140px); background: " + COLORS.fondo + "; border-radius: 16px; box-shadow: 0 12px 32px rgba(0,0,0,0.22);" +
     " z-index: 999999; display: none; flex-direction: column; overflow: hidden; }" +
@@ -61,6 +69,10 @@
     ".ehts-bubble-msg.user { align-self: flex-end; background: " + COLORS.primary + "; color: #fff; border-bottom-right-radius: 4px; }" +
     ".ehts-bubble-msg.bot { align-self: flex-start; background: #fff; color: " + COLORS.negro + "; border: 1px solid " + COLORS.hover + "; border-bottom-left-radius: 4px; }" +
     ".ehts-status { align-self: center; background: " + COLORS.accent + "; color: #fff; font-size: 12px; padding: 4px 10px; border-radius: 10px; }" +
+    "#ehts-human-row { text-align: center; padding: 6px 12px; border-top: 1px solid " + COLORS.hover + "; background: #fff; }" +
+    "#ehts-human-link { background: none; border: none; color: " + COLORS.secondary + "; font-size: 12px; cursor: pointer; text-decoration: underline; padding: 4px; }" +
+    "#ehts-human-link:hover { color: " + COLORS.negro + "; }" +
+    "#ehts-human-link:disabled { opacity: 0.5; cursor: default; text-decoration: none; }" +
     "#ehts-input-row { display: flex; padding: 12px; gap: 8px; border-top: 1px solid " + COLORS.hover + "; background: #fff; }" +
     "#ehts-input { flex: 1; border: 1px solid " + COLORS.hover + "; border-radius: 20px; padding: 10px 14px; font-size: 14px; outline: none; }" +
     "#ehts-input:focus { border-color: " + COLORS.primary + "; }" +
@@ -80,6 +92,10 @@
     '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
     '<path d="M4 4h16v12H7l-3 3V4z" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>';
 
+  var teaser = document.createElement("div");
+  teaser.id = "ehts-teaser";
+  teaser.innerHTML = '<span>¿Necesitas ayuda?</span><button id="ehts-teaser-close" aria-label="Cerrar aviso">&times;</button>';
+
   var win = document.createElement("div");
   win.id = "ehts-window";
   win.innerHTML =
@@ -88,6 +104,9 @@
     '<button id="ehts-close" aria-label="Cerrar chat">&times;</button>' +
     "</div>" +
     '<div id="ehts-messages"></div>' +
+    '<div id="ehts-human-row">' +
+    '<button id="ehts-human-link" type="button">🙋 Hablar con una persona</button>' +
+    "</div>" +
     '<div id="ehts-input-row">' +
     '<input id="ehts-input" type="text" placeholder="Escribe tu mensaje..." autocomplete="off" />' +
     '<button id="ehts-send" aria-label="Enviar">' +
@@ -96,6 +115,7 @@
     "</button>" +
     "</div>";
 
+  root.appendChild(teaser);
   root.appendChild(bubble);
   root.appendChild(win);
   document.body.appendChild(root);
@@ -104,6 +124,8 @@
   var inputEl = win.querySelector("#ehts-input");
   var sendBtn = win.querySelector("#ehts-send");
   var closeBtn = win.querySelector("#ehts-close");
+  var humanBtn = win.querySelector("#ehts-human-link");
+  var teaserCloseBtn = teaser.querySelector("#ehts-teaser-close");
 
   // ---------- Renderizado ----------
 
@@ -154,6 +176,7 @@
           appendStatus("Un agente humano se unirá en breve");
           startPolling();
         }
+        updateHumanButton();
       })
       .catch(function () {
         appendBubble("bot", "Ha ocurrido un error. Por favor, inténtalo de nuevo en unos segundos.");
@@ -162,6 +185,44 @@
         sendBtn.disabled = false;
       });
   }
+
+  function updateHumanButton() {
+    if (conversationStatus === "bot") {
+      humanBtn.disabled = false;
+      humanBtn.textContent = "🙋 Hablar con una persona";
+    } else if (conversationStatus === "waiting_human") {
+      humanBtn.disabled = true;
+      humanBtn.textContent = "⏳ Esperando a un agente...";
+    } else if (conversationStatus === "human") {
+      humanBtn.disabled = true;
+      humanBtn.textContent = "✅ Atendido por una persona";
+    } else {
+      humanBtn.disabled = true;
+      humanBtn.textContent = "🙋 Hablar con una persona";
+    }
+  }
+
+  function requestHuman() {
+    if (humanBtn.disabled) return;
+    humanBtn.disabled = true;
+    fetch(API_BASE + "/api/handoff", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ session_id: sessionId }),
+    })
+      .then(function () {
+        conversationStatus = "waiting_human";
+        appendStatus("Un agente humano se unirá en breve");
+        updateHumanButton();
+        startPolling();
+      })
+      .catch(function () {
+        appendBubble("bot", "No se ha podido conectar con una persona. Inténtalo de nuevo en unos segundos.");
+        updateHumanButton();
+      });
+  }
+
+  humanBtn.addEventListener("click", requestHuman);
 
   function startPolling() {
     if (pollTimer) return;
@@ -177,6 +238,7 @@
             appendStatus("El agente ha finalizado la atención, el asistente vuelve a estar disponible");
           }
           conversationStatus = data.status || conversationStatus;
+          updateHumanButton();
 
           var newMessages = data.messages.slice(renderedCount);
           newMessages.forEach(function (m) {
@@ -201,10 +263,19 @@
 
   // ---------- Eventos ----------
 
+  function hideTeaser() {
+    teaser.classList.remove("show");
+    try {
+      sessionStorage.setItem("ehts_teaser_dismissed", "1");
+    } catch {}
+  }
+
   function openChat() {
     chatOpen = true;
     win.classList.add("open");
+    hideTeaser();
     showWelcomeIfEmpty();
+    updateHumanButton();
     if (conversationStatus !== "bot") startPolling();
     inputEl.focus();
   }
@@ -223,6 +294,24 @@
   });
 
   closeBtn.addEventListener("click", closeChat);
+
+  teaser.addEventListener("click", openChat);
+  teaserCloseBtn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    hideTeaser();
+  });
+
+  try {
+    if (!sessionStorage.getItem("ehts_teaser_dismissed")) {
+      setTimeout(function () {
+        if (!chatOpen) teaser.classList.add("show");
+      }, 3000);
+    }
+  } catch {
+    setTimeout(function () {
+      if (!chatOpen) teaser.classList.add("show");
+    }, 3000);
+  }
 
   function handleSend() {
     var text = inputEl.value.trim();
