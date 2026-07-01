@@ -4,7 +4,7 @@
  * cargando (con la última versión vista) si la conexión falla momentáneamente.
  * No cachea respuestas de API: los datos del panel deben ser siempre frescos.
  */
-const CACHE_NAME = "ehts-admin-v1";
+const CACHE_NAME = "ehts-admin-v2";
 const PRECACHE_URLS = ["/admin/login", "/icons/icon-192.png", "/icons/icon-512.png"];
 
 self.addEventListener("install", (event) => {
