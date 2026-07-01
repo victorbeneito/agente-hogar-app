@@ -34,30 +34,44 @@ export function lookupGeoFromVercelHeaders(headers: Headers): GeoInfo | null {
   };
 }
 
-// Fallback: ipapi.co (para desarrollo local donde no hay cabeceras Vercel)
+// Fallback A: ipapi.co
+async function tryIpApiCo(ip: string): Promise<GeoInfo | null> {
+  try {
+    const res = await fetch(`https://ipapi.co/${ip}/json/`, { signal: AbortSignal.timeout(3000) });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (data.error || !data.country_code) return null;
+    return { country: data.country_name ?? null, countryCode: data.country_code, city: data.city ?? null };
+  } catch {
+    return null;
+  }
+}
+
+// Fallback B: ipwho.is (sin límite estricto, no requiere API key)
+async function tryIpWhoIs(ip: string): Promise<GeoInfo | null> {
+  try {
+    const res = await fetch(`https://ipwho.is/${ip}`, { signal: AbortSignal.timeout(3000) });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data.success || !data.country_code) return null;
+    return {
+      country: COUNTRY_NAMES[data.country_code?.toUpperCase()] ?? data.country ?? null,
+      countryCode: data.country_code?.toUpperCase() ?? null,
+      city: data.city ?? null,
+    };
+  } catch {
+    return null;
+  }
+}
+
 export async function lookupGeoByIp(ip: string): Promise<GeoInfo> {
   if (!ip || ip === "127.0.0.1" || ip === "::1" || ip.startsWith("192.168.") || ip.startsWith("10.")) {
     return { country: null, countryCode: null, city: null };
   }
-
-  try {
-    const res = await fetch(`https://ipapi.co/${ip}/json/`, { signal: AbortSignal.timeout(3000) });
-    if (!res.ok) return { country: null, countryCode: null, city: null };
-
-    const data = await res.json();
-    if (data.error) return { country: null, countryCode: null, city: null };
-
-    return {
-      country: data.country_name ?? null,
-      countryCode: data.country_code ?? null,
-      city: data.city ?? null,
-    };
-  } catch {
-    return { country: null, countryCode: null, city: null };
-  }
+  return (await tryIpApiCo(ip)) ?? (await tryIpWhoIs(ip)) ?? { country: null, countryCode: null, city: null };
 }
 
-// Función principal: Vercel headers primero, ipapi.co como fallback
+// Función principal: Vercel headers primero, APIs externas como fallback
 export async function lookupGeo(ip: string, headers?: Headers): Promise<GeoInfo> {
   if (headers) {
     const vercelGeo = lookupGeoFromVercelHeaders(headers);

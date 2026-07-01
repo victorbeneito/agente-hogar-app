@@ -92,12 +92,13 @@ export async function POST(request: NextRequest) {
 
   const flag = countryCodeToFlag(geo.countryCode);
   const deviceLabel = device === "mobile" ? "móvil" : device === "tablet" ? "tablet" : "escritorio";
+  const rawVercelCode = request.headers.get("x-vercel-ip-country") ?? "–";
 
   await sendTelegramMessage(
     `👤 Nuevo visitante desde ${flag} ${geo.country ?? "Desconocido"}\n` +
       `Viendo: ${page}\n` +
       `Dispositivo: ${deviceLabel} (${browser})\n` +
-      `IP: ${ip}`
+      `IP: ${ip} · Vercel-code: ${rawVercelCode}`
   );
 
   return NextResponse.json({ ok: true, new_visitor: true }, { headers: CORS_HEADERS });
