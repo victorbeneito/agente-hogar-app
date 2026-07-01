@@ -12,6 +12,7 @@ const config: Config = {
         accent:    '#F7A36B',
         fondo:     '#F8F8F5',
         hover:     '#AED7E6',
+        negro:     '#1A1A1A',
       },
       fontFamily: {
         poppins: ['Poppins', 'sans-serif'],

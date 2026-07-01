@@ -34,6 +34,109 @@ function timeAgo(iso: string) {
 
 const PAGE_SIZE = 12;
 
+// Panel de chat reutilizado en móvil (overlay) y desktop (columna)
+function ChatPanel({
+  selected,
+  messages,
+  draft,
+  sending,
+  messagesEndRef,
+  onBack,
+  onDraftChange,
+  onSend,
+  onUpdateStatus,
+}: {
+  selected: ConversationSummary;
+  messages: Message[];
+  draft: string;
+  sending: boolean;
+  messagesEndRef: React.RefObject<HTMLDivElement | null>;
+  onBack: () => void;
+  onDraftChange: (v: string) => void;
+  onSend: () => void;
+  onUpdateStatus: (s: string) => void;
+}) {
+  return (
+    <>
+      {/* Cabecera */}
+      <div className="shrink-0 p-4 border-b border-black/10 dark:border-white/10 flex items-center justify-between gap-2 bg-white dark:bg-[#1A1A1A]">
+        <div className="flex items-center gap-2 min-w-0">
+          <button
+            onClick={onBack}
+            aria-label="Volver"
+            className="md:hidden shrink-0 text-negro dark:text-fondo p-1 text-lg"
+          >
+            ←
+          </button>
+          <div className="min-w-0">
+            <p className="font-medium text-negro dark:text-fondo truncate">
+              {selected.metadata?.country ?? "Desconocido"}
+            </p>
+            <p className="text-xs text-secondary truncate">
+              {STATUS_LABEL[selected.status] ?? selected.status}
+            </p>
+          </div>
+        </div>
+        <div className="flex gap-2 shrink-0">
+          <button
+            onClick={() => onUpdateStatus("bot")}
+            className="text-xs px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 text-negro dark:text-fondo hover:bg-black/10 dark:hover:bg-white/10"
+          >
+            Al bot
+          </button>
+          <button
+            onClick={() => onUpdateStatus("closed")}
+            className="text-xs px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 text-negro dark:text-fondo hover:bg-black/10 dark:hover:bg-white/10"
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
+
+      {/* Mensajes */}
+      <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
+        {messages.map((m) => (
+          <div
+            key={m.id}
+            className={
+              "max-w-[75%] rounded-2xl px-4 py-2 text-sm " +
+              (m.role === "user"
+                ? "self-start bg-black/10 dark:bg-white/10 text-negro dark:text-fondo"
+                : m.role === "human_agent"
+                ? "self-end bg-primary text-white"
+                : "self-end bg-terciari text-negro")
+            }
+          >
+            <p className="text-[10px] opacity-70 mb-0.5">
+              {m.role === "user" ? "Cliente" : m.role === "human_agent" ? "Tú" : "Bot"}
+            </p>
+            {m.content}
+          </div>
+        ))}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Input */}
+      <div className="shrink-0 p-3 border-t border-black/10 dark:border-white/10 flex gap-2 bg-white dark:bg-[#1A1A1A]">
+        <input
+          value={draft}
+          onChange={(e) => onDraftChange(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && onSend()}
+          placeholder="Escribe como agente humano..."
+          className="flex-1 rounded-lg bg-fondo dark:bg-[#2D2D2D] border border-black/10 dark:border-white/10 px-4 py-2 text-sm text-negro dark:text-fondo placeholder:text-secondary outline-none focus:border-primary"
+        />
+        <button
+          onClick={onSend}
+          disabled={sending || !draft.trim()}
+          className="px-4 py-2 rounded-lg bg-primary hover:bg-hover text-white text-sm disabled:opacity-50"
+        >
+          Enviar
+        </button>
+      </div>
+    </>
+  );
+}
+
 export default function ConversacionesPage() {
   const [conversations, setConversations] = useState<ConversationSummary[]>([]);
   const [total, setTotal] = useState(0);
@@ -65,7 +168,6 @@ export default function ConversacionesPage() {
   useEffect(() => {
     if (!selectedId) return;
     let active = true;
-
     async function load() {
       const res = await fetch(`/api/conversations/${selectedId}`);
       if (!res.ok || !active) return;
@@ -73,7 +175,6 @@ export default function ConversacionesPage() {
       setSelected(data.conversation);
       setMessages(data.messages);
     }
-
     load();
     const interval = setInterval(load, 3000);
     return () => {
@@ -96,7 +197,6 @@ export default function ConversacionesPage() {
     });
     setDraft("");
     setSending(false);
-
     const res = await fetch(`/api/conversations/${selectedId}`);
     if (res.ok) {
       const data = await res.json();
@@ -119,145 +219,111 @@ export default function ConversacionesPage() {
     }
   }
 
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+
   return (
-    <div className="flex gap-4 flex-1 min-h-0">
-      <div className={(selectedId ? "hidden md:flex" : "flex") + " w-full md:w-80 shrink-0 flex-col"}>
-        <div className="flex items-baseline justify-between mb-4">
-          <h1 className="text-xl font-semibold">Conversaciones</h1>
-          <span className="text-secondary text-sm">{total} abiertas</span>
+    <>
+      {/* ── MÓVIL: overlay de pantalla completa cuando hay conversación abierta ── */}
+      {selectedId && selected && (
+        <div className="md:hidden fixed inset-0 z-20 flex flex-col bg-fondo dark:bg-[#2D2D2D]" style={{ paddingTop: 56, paddingBottom: 64 }}>
+          <ChatPanel
+            selected={selected}
+            messages={messages}
+            draft={draft}
+            sending={sending}
+            messagesEndRef={messagesEndRef}
+            onBack={() => { setSelectedId(null); setSelected(null); }}
+            onDraftChange={setDraft}
+            onSend={handleSend}
+            onUpdateStatus={updateStatus}
+          />
         </div>
+      )}
 
-        <div className="flex-1 overflow-y-auto flex flex-col gap-2">
-          {conversations.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => setSelectedId(c.id)}
-              className={
-                "text-left rounded-lg p-3 border-l-4 transition-colors " +
-                (c.status === "waiting_human" ? "border-accent" : "border-primary") +
-                " " +
-                (selectedId === c.id
-                  ? "bg-black/10 dark:bg-white/10"
-                  : "bg-white dark:bg-[#1A1A1A] border border-black/10 dark:border-white/5 shadow-sm dark:shadow-none hover:bg-black/5 dark:hover:bg-white/5")
-              }
-            >
-              <p className="text-sm font-medium">{c.metadata?.country ?? "Desconocido"}</p>
-              <p className="text-xs text-secondary">
-                {STATUS_LABEL[c.status] ?? c.status} · {timeAgo(c.updated_at)}
-              </p>
-            </button>
-          ))}
-          {conversations.length === 0 && <p className="text-secondary text-sm">No hay conversaciones abiertas.</p>}
-        </div>
+      {/* ── LAYOUT PRINCIPAL (lista + chat en desktop) ── */}
+      <div className="flex gap-4 flex-1 min-h-0">
 
-        {total > PAGE_SIZE && (
-          <div className="flex items-center justify-between pt-3 mt-2 border-t border-black/10 dark:border-white/10">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page === 1}
-              className="text-sm px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              ← Anterior
-            </button>
-            <span className="text-xs text-secondary">
-              {page} / {Math.ceil(total / PAGE_SIZE)}
-            </span>
-            <button
-              onClick={() => setPage((p) => p + 1)}
-              disabled={page >= Math.ceil(total / PAGE_SIZE)}
-              className="text-sm px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              Siguiente →
-            </button>
+        {/* Lista de conversaciones */}
+        <div className="w-full md:w-80 shrink-0 flex flex-col min-h-0">
+          <div className="flex items-baseline justify-between mb-4">
+            <h1 className="text-xl font-semibold text-negro dark:text-fondo">Conversaciones</h1>
+            <span className="text-secondary text-sm">{total} abiertas</span>
           </div>
-        )}
-      </div>
 
-      <div
-        className={
-          (selectedId ? "flex" : "hidden md:flex") +
-          " flex-1 bg-white dark:bg-[#1A1A1A] border border-black/10 dark:border-white/5 rounded-xl flex-col overflow-hidden shadow-sm dark:shadow-none"
-        }
-      >
-        {!selected ? (
-          <div className="flex-1 flex items-center justify-center text-secondary">
-            Selecciona una conversación
-          </div>
-        ) : (
-          <>
-            <div className="p-4 border-b border-black/10 dark:border-white/10 flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2 min-w-0">
-                <button
-                  onClick={() => setSelectedId(null)}
-                  aria-label="Volver a la lista"
-                  className="md:hidden shrink-0 text-secondary hover:text-negro dark:hover:text-fondo p-1"
-                >
-                  ←
-                </button>
-                <div className="min-w-0">
-                  <p className="font-medium truncate">{selected.metadata?.country ?? "Desconocido"}</p>
-                  <p className="text-xs text-secondary truncate">
-                    <code>{selected.session_id}</code> · {STATUS_LABEL[selected.status] ?? selected.status}
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-2 shrink-0">
-                <button
-                  onClick={() => updateStatus("bot")}
-                  className="text-xs px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10"
-                >
-                  Devolver al bot
-                </button>
-                <button
-                  onClick={() => updateStatus("closed")}
-                  className="text-xs px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10"
-                >
-                  Cerrar
-                </button>
-              </div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
-              {messages.map((m) => (
-                <div
-                  key={m.id}
-                  className={
-                    "max-w-[75%] rounded-2xl px-4 py-2 text-sm " +
-                    (m.role === "user"
-                      ? "self-start bg-black/10 dark:bg-white/10"
-                      : m.role === "human_agent"
-                      ? "self-end bg-primary text-white"
-                      : "self-end bg-terciari text-negro")
-                  }
-                >
-                  <p className="text-[10px] opacity-70 mb-0.5">
-                    {m.role === "user" ? "Cliente" : m.role === "human_agent" ? "Tú" : "Bot"}
-                  </p>
-                  {m.content}
-                </div>
-              ))}
-              <div ref={messagesEndRef} />
-            </div>
-
-            <div className="p-3 border-t border-black/10 dark:border-white/10 flex gap-2">
-              <input
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                placeholder="Escribe como agente humano..."
-                className="flex-1 rounded-lg bg-fondo dark:bg-[#2D2D2D] border border-black/10 dark:border-white/10 px-4 py-2 text-sm outline-none focus:border-primary"
-              />
+          <div className="flex-1 overflow-y-auto flex flex-col gap-2">
+            {conversations.map((c) => (
               <button
-                onClick={handleSend}
-                disabled={sending || !draft.trim()}
-                className="px-4 py-2 rounded-lg bg-primary hover:bg-hover text-white text-sm disabled:opacity-50"
+                key={c.id}
+                onClick={() => setSelectedId(c.id)}
+                style={{
+                  borderLeftColor: c.status === "waiting_human" ? "#F7A36B" : "#6BAEC9",
+                  borderLeftWidth: 4,
+                }}
+                className={
+                  "text-left rounded-lg p-3 border transition-colors " +
+                  (selectedId === c.id
+                    ? "bg-black/10 dark:bg-white/10 border-black/10 dark:border-white/5"
+                    : "bg-white dark:bg-[#1A1A1A] border-black/10 dark:border-white/5 shadow-sm dark:shadow-none hover:bg-black/5 dark:hover:bg-white/5")
+                }
               >
-                Enviar
+                <p className="text-sm font-medium text-negro dark:text-fondo">
+                  {c.metadata?.country ?? "Desconocido"}
+                </p>
+                <p className="text-xs text-secondary">
+                  {STATUS_LABEL[c.status] ?? c.status} · {timeAgo(c.updated_at)}
+                </p>
+              </button>
+            ))}
+            {conversations.length === 0 && (
+              <p className="text-secondary text-sm">No hay conversaciones abiertas.</p>
+            )}
+          </div>
+
+          {/* Paginación — solo si hay más de una página */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between pt-3 mt-2 border-t border-black/10 dark:border-white/10 shrink-0">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="text-sm px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 text-negro dark:text-fondo hover:bg-black/10 dark:hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                ← Ant.
+              </button>
+              <span className="text-xs text-secondary">
+                {page} / {totalPages}
+              </span>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page >= totalPages}
+                className="text-sm px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 text-negro dark:text-fondo hover:bg-black/10 dark:hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Sig. →
               </button>
             </div>
-          </>
-        )}
+          )}
+        </div>
+
+        {/* Panel de chat — solo en desktop */}
+        <div className="hidden md:flex flex-1 bg-white dark:bg-[#1A1A1A] border border-black/10 dark:border-white/5 rounded-xl flex-col overflow-hidden shadow-sm dark:shadow-none">
+          {!selected ? (
+            <div className="flex-1 flex items-center justify-center text-secondary">
+              Selecciona una conversación
+            </div>
+          ) : (
+            <ChatPanel
+              selected={selected}
+              messages={messages}
+              draft={draft}
+              sending={sending}
+              messagesEndRef={messagesEndRef}
+              onBack={() => { setSelectedId(null); setSelected(null); }}
+              onDraftChange={setDraft}
+              onSend={handleSend}
+              onUpdateStatus={updateStatus}
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
