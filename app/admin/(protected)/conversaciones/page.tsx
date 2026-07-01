@@ -174,46 +174,53 @@ export default function ConversacionesPage() {
             </div>
           </div>
 
-          {/* Mensajes — el spacer empuja los mensajes al fondo, como WhatsApp */}
-          <div style={{ flex: 1, overflowY: "auto" }} className="p-4 flex flex-col gap-3">
-            <div style={{ flex: 1 }} />
-            {messages.map((m) => (
-              <div
-                key={m.id}
-                className={
-                  "max-w-[75%] rounded-2xl px-4 py-2 text-sm " +
-                  (m.role === "user"
-                    ? "self-start bg-black/10 dark:bg-white/10 text-negro dark:text-fondo"
-                    : m.role === "human_agent"
-                    ? "self-end bg-primary text-white"
-                    : "self-end bg-terciari text-negro")
-                }
-              >
-                <p className="text-[10px] opacity-70 mb-0.5">
-                  {m.role === "user" ? "Cliente" : m.role === "human_agent" ? "Tú" : "Bot"}
-                </p>
-                {m.content}
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
+          {/* Área scrollable: mensajes arriba, input sticky abajo.
+              Con pocos mensajes → input aparece justo debajo de los mensajes.
+              Con muchos mensajes → el scroll activa y el input queda pegado al fondo. */}
+          <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column" }}>
+            {/* Mensajes — altura natural, se leen de arriba a abajo */}
+            <div className="p-4 flex flex-col gap-3">
+              {messages.map((m) => (
+                <div
+                  key={m.id}
+                  className={
+                    "max-w-[75%] rounded-2xl px-4 py-2 text-sm " +
+                    (m.role === "user"
+                      ? "self-start bg-black/10 dark:bg-white/10 text-negro dark:text-fondo"
+                      : m.role === "human_agent"
+                      ? "self-end bg-primary text-white"
+                      : "self-end bg-terciari text-negro")
+                  }
+                >
+                  <p className="text-[10px] opacity-70 mb-0.5">
+                    {m.role === "user" ? "Cliente" : m.role === "human_agent" ? "Tú" : "Bot"}
+                  </p>
+                  {m.content}
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
 
-          {/* Input — pegado al fondo del overlay (que es el fondo de la pantalla) */}
-          <div className="shrink-0 p-3 border-t border-black/10 dark:border-white/10 flex gap-2 bg-white dark:bg-[#1A1A1A]">
-            <input
-              value={draft}
-              onChange={(e) => setDraft(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
-              placeholder="Escribe como agente humano..."
-              className="flex-1 rounded-lg bg-fondo dark:bg-[#2D2D2D] border border-black/10 dark:border-white/10 px-4 py-2 text-sm text-negro dark:text-fondo placeholder:text-secondary outline-none focus:border-primary"
-            />
-            <button
-              onClick={handleSend}
-              disabled={sending || !draft.trim()}
-              className="px-4 py-2 rounded-lg bg-primary hover:bg-hover text-white text-sm disabled:opacity-50"
+            {/* Input sticky: se queda visible al fondo del área de scroll */}
+            <div
+              style={{ position: "sticky", bottom: 0 }}
+              className="p-3 border-t border-black/10 dark:border-white/10 flex gap-2 bg-white dark:bg-[#1A1A1A]"
             >
-              Enviar
-            </button>
+              <input
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
+                placeholder="Escribe como agente humano..."
+                className="flex-1 rounded-lg bg-fondo dark:bg-[#2D2D2D] border border-black/10 dark:border-white/10 px-4 py-2 text-sm text-negro dark:text-fondo placeholder:text-secondary outline-none focus:border-primary"
+              />
+              <button
+                onClick={handleSend}
+                disabled={sending || !draft.trim()}
+                className="px-4 py-2 rounded-lg bg-primary hover:bg-hover text-white text-sm disabled:opacity-50"
+              >
+                Enviar
+              </button>
+            </div>
           </div>
         </div>
       )}
