@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export default function ThemeToggle() {
+export default function ThemeToggle({ inline = false }: { inline?: boolean }) {
   const [dark, setDark] = useState(true);
 
   useEffect(() => {
@@ -15,6 +15,18 @@ export default function ThemeToggle() {
     setDark(next);
     document.documentElement.classList.toggle("dark", next);
     localStorage.setItem("ehts_theme", next ? "dark" : "light");
+  }
+
+  if (inline) {
+    return (
+      <button
+        onClick={toggle}
+        aria-label={dark ? "Activar modo claro" : "Activar modo oscuro"}
+        className="text-secondary hover:text-negro dark:hover:text-fondo p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+      >
+        {dark ? "☀️" : "🌙"}
+      </button>
+    );
   }
 
   return (

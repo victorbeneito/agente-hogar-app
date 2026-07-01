@@ -18,45 +18,26 @@ export default function Sidebar({ logoutAction }: { logoutAction: () => Promise<
 
   return (
     <>
+      {/* Top bar — solo visible en móvil */}
       <div className="md:hidden fixed top-0 inset-x-0 h-14 bg-white dark:bg-[#1A1A1A] border-b border-black/10 dark:border-white/10 flex items-center justify-between px-4 z-30">
         <p className="font-semibold text-negro dark:text-fondo text-sm">El Hogar de Tus Sueños</p>
-        <button
-          onClick={() => setOpen(true)}
-          aria-label="Abrir menú"
-          className="text-negro dark:text-fondo p-2 -mr-2"
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-        </button>
+        <ThemeToggle inline />
       </div>
 
+      {/* Overlay para cerrar sidebar en desktop (si se abre) */}
       {open && (
         <div
-          className="md:hidden fixed inset-0 bg-black/50 z-40"
+          className="hidden md:block fixed inset-0 bg-black/50 z-40"
           onClick={() => setOpen(false)}
           aria-hidden="true"
         />
       )}
 
-      <aside
-        className={
-          "fixed md:static top-0 left-0 h-full w-64 md:w-60 bg-white dark:bg-[#1A1A1A] flex flex-col shrink-0 z-50 transition-transform duration-200 " +
-          (open ? "translate-x-0" : "-translate-x-full md:translate-x-0")
-        }
-      >
-        <div className="p-5 border-b border-black/10 dark:border-white/10 flex items-center justify-between">
-          <div>
-            <p className="font-semibold text-negro dark:text-fondo leading-tight">El Hogar de Tus Sueños</p>
-            <p className="text-xs text-secondary">Panel admin</p>
-          </div>
-          <button
-            onClick={() => setOpen(false)}
-            aria-label="Cerrar menú"
-            className="md:hidden text-secondary hover:text-negro dark:hover:text-fondo p-1"
-          >
-            ✕
-          </button>
+      {/* Sidebar — solo visible en desktop */}
+      <aside className="hidden md:flex md:static top-0 left-0 h-full w-60 bg-white dark:bg-[#1A1A1A] flex-col shrink-0 z-50">
+        <div className="p-5 border-b border-black/10 dark:border-white/10">
+          <p className="font-semibold text-negro dark:text-fondo leading-tight">El Hogar de Tus Sueños</p>
+          <p className="text-xs text-secondary">Panel admin</p>
         </div>
 
         <nav className="flex-1 p-3 flex flex-col gap-1 overflow-y-auto">

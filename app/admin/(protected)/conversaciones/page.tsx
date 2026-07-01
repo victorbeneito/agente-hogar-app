@@ -32,8 +32,12 @@ function timeAgo(iso: string) {
   return `hace ${Math.round(minutes / 60)} h`;
 }
 
+const PAGE_SIZE = 12;
+
 export default function ConversacionesPage() {
   const [conversations, setConversations] = useState<ConversationSummary[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selected, setSelected] = useState<ConversationSummary | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -44,10 +48,11 @@ export default function ConversacionesPage() {
   useEffect(() => {
     let active = true;
     async function load() {
-      const res = await fetch("/api/conversations?status=open");
+      const res = await fetch(`/api/conversations?status=open&page=${page}&limit=${PAGE_SIZE}`);
       if (!res.ok || !active) return;
       const data = await res.json();
       setConversations(data.conversations);
+      setTotal(data.total ?? 0);
     }
     load();
     const interval = setInterval(load, 5000);
@@ -55,7 +60,7 @@ export default function ConversacionesPage() {
       active = false;
       clearInterval(interval);
     };
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     if (!selectedId) return;
@@ -117,8 +122,10 @@ export default function ConversacionesPage() {
   return (
     <div className="flex gap-4 flex-1 min-h-0">
       <div className={(selectedId ? "hidden md:flex" : "flex") + " w-full md:w-80 shrink-0 flex-col"}>
-        <h1 className="text-xl font-semibold mb-1">Conversaciones</h1>
-        <p className="text-secondary text-sm mb-4">{conversations.length} abiertas</p>
+        <div className="flex items-baseline justify-between mb-4">
+          <h1 className="text-xl font-semibold">Conversaciones</h1>
+          <span className="text-secondary text-sm">{total} abiertas</span>
+        </div>
 
         <div className="flex-1 overflow-y-auto flex flex-col gap-2">
           {conversations.map((c) => (
@@ -142,6 +149,28 @@ export default function ConversacionesPage() {
           ))}
           {conversations.length === 0 && <p className="text-secondary text-sm">No hay conversaciones abiertas.</p>}
         </div>
+
+        {total > PAGE_SIZE && (
+          <div className="flex items-center justify-between pt-3 mt-2 border-t border-black/10 dark:border-white/10">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="text-sm px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              ← Anterior
+            </button>
+            <span className="text-xs text-secondary">
+              {page} / {Math.ceil(total / PAGE_SIZE)}
+            </span>
+            <button
+              onClick={() => setPage((p) => p + 1)}
+              disabled={page >= Math.ceil(total / PAGE_SIZE)}
+              className="text-sm px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Siguiente →
+            </button>
+          </div>
+        )}
       </div>
 
       <div

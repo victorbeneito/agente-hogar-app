@@ -11,12 +11,15 @@ export async function GET(request: NextRequest) {
   const q = searchParams.get("q");
   const from = searchParams.get("from");
   const to = searchParams.get("to");
+  const limit = Math.min(parseInt(searchParams.get("limit") ?? "15"), 50);
+  const page = Math.max(parseInt(searchParams.get("page") ?? "1"), 1);
+  const offset = (page - 1) * limit;
 
   let query = supabaseAdmin
     .from("conversations")
-    .select("id, session_id, status, created_at, updated_at, metadata")
+    .select("id, session_id, status, created_at, updated_at, metadata", { count: "exact" })
     .order("updated_at", { ascending: false })
-    .limit(100);
+    .range(offset, offset + limit - 1);
 
   if (status === "open") {
     query = query.neq("status", "closed");
@@ -35,14 +38,19 @@ export async function GET(request: NextRequest) {
 
     const ids = [...new Set((matchingMessages ?? []).map((m) => m.conversation_id))];
     if (ids.length === 0) {
-      return NextResponse.json({ conversations: [] });
+      return NextResponse.json({ conversations: [], total: 0, page, limit });
     }
     query = query.in("id", ids);
   }
 
-  const { data: conversations, error } = await query;
+  const { data: conversations, error, count } = await query;
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  return NextResponse.json({ conversations: conversations ?? [] });
+  return NextResponse.json({
+    conversations: conversations ?? [],
+    total: count ?? 0,
+    page,
+    limit,
+  });
 }

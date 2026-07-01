@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Visitante nuevo: geolocalizar y notificar por Telegram
-  const geo = await lookupGeo(ip);
+  const geo = await lookupGeo(ip, request.headers);
 
   const { error: insertError } = await supabaseAdmin.from("visitors").insert({
     session_id: sessionId,
