@@ -45,6 +45,13 @@ export default function ConversacionesPage() {
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Si la URL incluye ?id=xxx (viene desde el enlace de Telegram), abrir esa conversación
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    if (id) setSelectedId(id);
+  }, []);
+
   // Carga lista de conversaciones abiertas con polling
   useEffect(() => {
     let active = true;
@@ -204,19 +211,32 @@ export default function ConversacionesPage() {
             {/* Input sticky: se queda visible al fondo del área de scroll */}
             <div
               style={{ position: "sticky", bottom: 0 }}
-              className="p-3 border-t border-black/10 dark:border-white/10 flex gap-2 bg-white dark:bg-[#1A1A1A]"
+              className="p-3 border-t border-black/10 dark:border-white/10 flex gap-2 items-end bg-white dark:bg-[#1A1A1A]"
             >
-              <input
+              <textarea
                 value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
-                placeholder="Escribe como agente humano..."
-                className="flex-1 rounded-lg bg-fondo dark:bg-[#2D2D2D] border border-black/10 dark:border-white/10 px-4 py-2 text-sm text-negro dark:text-fondo placeholder:text-secondary outline-none focus:border-primary"
+                onChange={(e) => {
+                  setDraft(e.target.value);
+                  // Auto-altura: resetea a 1 fila y luego expande al contenido
+                  e.target.style.height = "auto";
+                  e.target.style.height = Math.min(e.target.scrollHeight, 160) + "px";
+                }}
+                onKeyDown={(e) => {
+                  // Enter sin Shift envía; Shift+Enter hace salto de línea
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                  }
+                }}
+                placeholder="Escribe como agente humano... (Shift+Enter para nueva línea)"
+                rows={1}
+                style={{ resize: "none", minHeight: "2.5rem" }}
+                className="flex-1 rounded-lg bg-fondo dark:bg-[#2D2D2D] border border-black/10 dark:border-white/10 px-4 py-2 text-sm text-negro dark:text-fondo placeholder:text-secondary outline-none focus:border-primary overflow-y-auto"
               />
               <button
                 onClick={handleSend}
                 disabled={sending || !draft.trim()}
-                className="px-4 py-2 rounded-lg bg-primary hover:bg-hover text-white text-sm disabled:opacity-50"
+                className="shrink-0 px-4 py-2 rounded-lg bg-primary hover:bg-hover text-white text-sm disabled:opacity-50"
               >
                 Enviar
               </button>

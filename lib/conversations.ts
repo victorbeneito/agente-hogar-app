@@ -74,12 +74,23 @@ export async function sendHumanMessage(conversationId: string, content: string) 
 export async function triggerHandoff(conversationId: string) {
   await supabaseAdmin.from("conversations").update({ status: "waiting_human" }).eq("id", conversationId);
 
-  const { data: lastMessages } = await supabaseAdmin
-    .from("messages")
-    .select("role, content")
-    .eq("conversation_id", conversationId)
-    .order("created_at", { ascending: false })
-    .limit(3);
+  const [{ data: conv }, { data: lastMessages }] = await Promise.all([
+    supabaseAdmin
+      .from("conversations")
+      .select("metadata")
+      .eq("id", conversationId)
+      .maybeSingle(),
+    supabaseAdmin
+      .from("messages")
+      .select("role, content")
+      .eq("conversation_id", conversationId)
+      .order("created_at", { ascending: false })
+      .limit(3),
+  ]);
+
+  const countryCode = (conv?.metadata as Record<string, string> | null)?.country_code ?? null;
+  const country = (conv?.metadata as Record<string, string> | null)?.country ?? null;
+  const flag = countryCodeToFlag(countryCode);
 
   const summary = (lastMessages ?? [])
     .reverse()
@@ -87,8 +98,8 @@ export async function triggerHandoff(conversationId: string) {
     .join("\n");
 
   await sendTelegramMessage(
-    `🚨 ATENCIÓN REQUERIDA - El cliente quiere hablar con una persona.\n` +
+    `🚨 ATENCIÓN REQUERIDA - El cliente ${flag} ${country ?? "Desconocido"} quiere hablar con una persona.\n` +
       `Resumen:\n${summary}\n` +
-      `Ver en panel: https://agente.elhogardetusuenos.com/admin`
+      `Ver conversación: https://agente.elhogardetusuenos.com/admin/conversaciones?id=${conversationId}`
   );
 }

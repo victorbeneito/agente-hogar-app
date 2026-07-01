@@ -73,8 +73,9 @@
     "#ehts-human-link { background: none; border: none; color: " + COLORS.secondary + "; font-size: 12px; cursor: pointer; text-decoration: underline; padding: 4px; }" +
     "#ehts-human-link:hover { color: " + COLORS.negro + "; }" +
     "#ehts-human-link:disabled { opacity: 0.5; cursor: default; text-decoration: none; }" +
-    "#ehts-input-row { display: flex; padding: 12px; gap: 8px; border-top: 1px solid " + COLORS.hover + "; background: #fff; }" +
-    "#ehts-input { flex: 1; border: 1px solid " + COLORS.hover + "; border-radius: 20px; padding: 10px 14px; font-size: 14px; outline: none; }" +
+    "#ehts-input-row { display: flex; padding: 12px; gap: 8px; align-items: flex-end; border-top: 1px solid " + COLORS.hover + "; background: #fff; }" +
+    "#ehts-input { flex: 1; border: 1px solid " + COLORS.hover + "; border-radius: 14px; padding: 10px 14px; font-size: 14px; outline: none;" +
+    " resize: none; min-height: 40px; max-height: 120px; overflow-y: auto; line-height: 1.4; font-family: inherit; }" +
     "#ehts-input:focus { border-color: " + COLORS.primary + "; }" +
     "#ehts-send { background: " + COLORS.primary + "; border: none; color: #fff; border-radius: 50%; width: 40px; height: 40px;" +
     " cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }" +
@@ -108,7 +109,7 @@
     '<button id="ehts-human-link" type="button">🙋 Hablar con una persona</button>' +
     "</div>" +
     '<div id="ehts-input-row">' +
-    '<input id="ehts-input" type="text" placeholder="Escribe tu mensaje..." autocomplete="off" />' +
+    '<textarea id="ehts-input" rows="1" placeholder="Escribe tu mensaje..." autocomplete="off"></textarea>' +
     '<button id="ehts-send" aria-label="Enviar">' +
     '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
     '<path d="M3 11l18-8-8 18-2-8-8-2z" stroke="#fff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>' +
@@ -313,16 +314,25 @@
     }, 3000);
   }
 
+  function autoResize() {
+    inputEl.style.height = "auto";
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + "px";
+  }
+
+  inputEl.addEventListener("input", autoResize);
+
   function handleSend() {
     var text = inputEl.value.trim();
     if (!text) return;
     inputEl.value = "";
+    inputEl.style.height = "auto";
     sendMessage(text);
   }
 
   sendBtn.addEventListener("click", handleSend);
   inputEl.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
+    // Enter sin Shift envía; Shift+Enter hace salto de línea
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
