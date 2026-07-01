@@ -174,8 +174,9 @@ export default function ConversacionesPage() {
             </div>
           </div>
 
-          {/* Mensajes — flex:1 ocupa todo el espacio entre cabecera e input */}
+          {/* Mensajes — el spacer empuja los mensajes al fondo, como WhatsApp */}
           <div style={{ flex: 1, overflowY: "auto" }} className="p-4 flex flex-col gap-3">
+            <div style={{ flex: 1 }} />
             {messages.map((m) => (
               <div
                 key={m.id}
