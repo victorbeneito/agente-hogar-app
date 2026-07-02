@@ -140,12 +140,17 @@
 
   function renderContent(text) {
     var escaped = escapeHtml(text);
-    // Convierte URLs (http/https) en enlaces clicables
+    // 1. Convierte markdown [texto](url) en enlace — debe ir ANTES de URLs sueltas
     escaped = escaped.replace(
-      /(https?:\/\/[^\s<>"]+)/g,
+      /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
+      '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:#6BAEC9;text-decoration:underline;">$1</a>'
+    );
+    // 2. Convierte URLs sueltas que no estén ya dentro de un href
+    escaped = escaped.replace(
+      /(?<!href=")(https?:\/\/[^\s<>")\]]+)/g,
       '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:#6BAEC9;text-decoration:underline;">$1</a>'
     );
-    // Convierte saltos de línea en <br>
+    // 3. Convierte saltos de línea en <br>
     escaped = escaped.replace(/\n/g, "<br>");
     return escaped;
   }
