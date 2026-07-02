@@ -77,6 +77,7 @@ export async function lookupGeo(ip: string, headers?: Headers): Promise<GeoInfo>
     const vercelGeo = lookupGeoFromVercelHeaders(headers);
     if (vercelGeo) return vercelGeo;
   }
+  if (!ip) return { country: null, countryCode: null, city: null };
   return lookupGeoByIp(ip);
 }
 

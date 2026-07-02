@@ -1,8 +1,8 @@
 import { supabaseAdmin } from "@/lib/supabase";
 import { sendTelegramMessage } from "@/lib/telegram";
-import { countryCodeToFlag } from "@/lib/geo";
+import { countryCodeToFlag, lookupGeo } from "@/lib/geo";
 
-export async function getOrCreateConversation(sessionId: string) {
+export async function getOrCreateConversation(sessionId: string, requestHeaders?: Headers) {
   const { data: existing } = await supabaseAdmin
     .from("conversations")
     .select("id, status")
@@ -30,6 +30,15 @@ export async function getOrCreateConversation(sessionId: string) {
     await supabaseAdmin.from("visitors").update({ has_chatted: true }).eq("session_id", sessionId);
   }
 
+  // Si el visitor no tiene país, usar geo de los headers del request como fallback
+  let country = visitor?.country ?? null;
+  let countryCode = visitor?.country_code ?? null;
+  if ((!country || !countryCode) && requestHeaders) {
+    const geo = await lookupGeo("", requestHeaders);
+    country = country ?? geo.country;
+    countryCode = countryCode ?? geo.countryCode;
+  }
+
   const { data: created, error } = await supabaseAdmin
     .from("conversations")
     .insert({
@@ -38,8 +47,8 @@ export async function getOrCreateConversation(sessionId: string) {
       metadata: {
         device: visitor?.device ?? null,
         browser: visitor?.browser ?? null,
-        country: visitor?.country ?? null,
-        country_code: visitor?.country_code ?? null,
+        country: country ?? null,
+        country_code: countryCode ?? null,
         entry_page: visitor?.current_page ?? null,
         referrer: visitor?.referrer ?? null,
       },
@@ -51,7 +60,7 @@ export async function getOrCreateConversation(sessionId: string) {
     throw new Error(`No se pudo crear la conversación: ${error?.message}`);
   }
 
-  return { ...created, isNew: true, visitorCountry: visitor?.country, visitorCountryCode: visitor?.country_code };
+  return { ...created, isNew: true, visitorCountry: country, visitorCountryCode: countryCode };
 }
 
 export async function notifyNewChat(country: string | null | undefined, countryCode: string | null | undefined, firstMessage: string) {

@@ -65,7 +65,7 @@
     "#ehts-header span { font-size: 12px; opacity: 0.9; display: block; margin-top: 2px; }" +
     "#ehts-close { background: transparent; border: none; color: #fff; font-size: 20px; cursor: pointer; line-height: 1; padding: 4px; }" +
     "#ehts-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }" +
-    ".ehts-bubble-msg { max-width: 80%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.4; white-space: pre-wrap; word-break: break-word; }" +
+    ".ehts-bubble-msg { max-width: 80%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; word-break: break-word; }" +
     ".ehts-bubble-msg.user { align-self: flex-end; background: " + COLORS.primary + "; color: #fff; border-bottom-right-radius: 4px; }" +
     ".ehts-bubble-msg.bot { align-self: flex-start; background: #fff; color: " + COLORS.negro + "; border: 1px solid " + COLORS.hover + "; border-bottom-left-radius: 4px; }" +
     ".ehts-status { align-self: center; background: " + COLORS.accent + "; color: #fff; font-size: 12px; padding: 4px 10px; border-radius: 10px; }" +
@@ -130,10 +130,34 @@
 
   // ---------- Renderizado ----------
 
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function renderContent(text) {
+    var escaped = escapeHtml(text);
+    // Convierte URLs (http/https) en enlaces clicables
+    escaped = escaped.replace(
+      /(https?:\/\/[^\s<>"]+)/g,
+      '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:#6BAEC9;text-decoration:underline;">$1</a>'
+    );
+    // Convierte saltos de línea en <br>
+    escaped = escaped.replace(/\n/g, "<br>");
+    return escaped;
+  }
+
   function appendBubble(role, content) {
     var div = document.createElement("div");
     div.className = "ehts-bubble-msg " + (role === "user" ? "user" : "bot");
-    div.textContent = content;
+    if (role === "user") {
+      div.textContent = content;
+    } else {
+      div.innerHTML = renderContent(content);
+    }
     messagesEl.appendChild(div);
     messagesEl.scrollTop = messagesEl.scrollHeight;
   }
