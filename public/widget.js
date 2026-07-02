@@ -38,6 +38,7 @@
   var pollTimer = null;
   var chatOpen = false;
   var conversationStatus = "bot";
+  var hasSentMessage = false; // true cuando el cliente ha enviado al menos un mensaje
 
   // ---------- Construcción del DOM ----------
 
@@ -184,6 +185,7 @@
   // ---------- Comunicación con la API ----------
 
   function sendMessage(text) {
+    hasSentMessage = true;
     appendBubble("user", text);
     renderedCount++;
     sendBtn.disabled = true;
@@ -310,7 +312,25 @@
     inputEl.focus();
   }
 
+  function notifyAbandon() {
+    if (!hasSentMessage) return;
+    if (conversationStatus === "closed" || conversationStatus === "human") return;
+    var payload = JSON.stringify({ session_id: sessionId });
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(API_BASE + "/api/conversations/abandon", new Blob([payload], { type: "application/json" }));
+    } else {
+      fetch(API_BASE + "/api/conversations/abandon", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+        keepalive: true,
+      }).catch(function () {});
+    }
+    conversationStatus = "closed";
+  }
+
   function closeChat() {
+    notifyAbandon();
     chatOpen = false;
     win.classList.remove("open");
   }
@@ -324,6 +344,9 @@
   });
 
   closeBtn.addEventListener("click", closeChat);
+
+  // Cuando el cliente cierra la pestaña o navega fuera
+  window.addEventListener("beforeunload", notifyAbandon);
 
   teaser.addEventListener("click", openChat);
   teaserCloseBtn.addEventListener("click", function (e) {

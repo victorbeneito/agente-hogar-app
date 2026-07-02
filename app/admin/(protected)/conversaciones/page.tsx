@@ -187,24 +187,32 @@ export default function ConversacionesPage() {
           <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column" }}>
             {/* Mensajes — altura natural, se leen de arriba a abajo */}
             <div className="p-4 flex flex-col gap-3">
-              {messages.map((m) => (
-                <div
-                  key={m.id}
-                  className={
-                    "max-w-[75%] rounded-2xl px-4 py-2 text-sm " +
-                    (m.role === "user"
-                      ? "self-start bg-black/10 dark:bg-white/10 text-negro dark:text-fondo"
-                      : m.role === "human_agent"
-                      ? "self-end bg-primary text-white"
-                      : "self-end bg-terciari text-negro")
-                  }
-                >
-                  <p className="text-[10px] opacity-70 mb-0.5">
-                    {m.role === "user" ? "Cliente" : m.role === "human_agent" ? "Tú" : "Bot"}
-                  </p>
-                  {m.content}
-                </div>
-              ))}
+              {messages.map((m) =>
+                m.role === "system" ? (
+                  <div key={m.id} className="self-center flex items-center gap-2 text-xs text-secondary italic">
+                    <span className="h-px w-8 bg-black/10 dark:bg-white/10" />
+                    {m.content}
+                    <span className="h-px w-8 bg-black/10 dark:bg-white/10" />
+                  </div>
+                ) : (
+                  <div
+                    key={m.id}
+                    className={
+                      "max-w-[75%] rounded-2xl px-4 py-2 text-sm " +
+                      (m.role === "user"
+                        ? "self-start bg-black/10 dark:bg-white/10 text-negro dark:text-fondo"
+                        : m.role === "human_agent"
+                        ? "self-end bg-primary text-white"
+                        : "self-end bg-terciari text-negro")
+                    }
+                  >
+                    <p className="text-[10px] opacity-70 mb-0.5">
+                      {m.role === "user" ? "Cliente" : m.role === "human_agent" ? "Tú" : "Bot"}
+                    </p>
+                    {m.content}
+                  </div>
+                )
+              )}
               <div ref={messagesEndRef} />
             </div>
 
