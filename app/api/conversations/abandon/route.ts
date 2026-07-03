@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { sendTelegramMessage } from "@/lib/telegram";
+import { countryCodeToFlag } from "@/lib/geo";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -21,7 +23,7 @@ export async function POST(request: NextRequest) {
 
   const { data: conv } = await supabaseAdmin
     .from("conversations")
-    .select("id, status")
+    .select("id, status, metadata")
     .eq("session_id", sessionId)
     .maybeSingle();
 
@@ -29,8 +31,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true }, { headers: CORS_HEADERS });
   }
 
-  // Solo cerrar si el bot o está esperando humano — si ya hay un humano atendiendo, no interrumpir
-  if (conv.status === "bot" || conv.status === "waiting_human") {
+  // Cerrar salvo que ya esté cerrada — el cliente se ha ido, da igual quién atendía
+  if (conv.status !== "closed") {
+    const wasHuman = conv.status === "human" || conv.status === "waiting_human";
+
     await supabaseAdmin
       .from("conversations")
       .update({ status: "closed" })
@@ -41,6 +45,14 @@ export async function POST(request: NextRequest) {
       role: "system",
       content: "El cliente ha cerrado el chat",
     });
+
+    if (wasHuman) {
+      const metadata = conv.metadata as Record<string, string> | null;
+      const flag = countryCodeToFlag(metadata?.country_code ?? null);
+      await sendTelegramMessage(
+        `❌ El cliente ${flag} ${metadata?.country ?? "Desconocido"} ha abandonado el chat - Conversación cerrada`
+      );
+    }
   }
 
   return NextResponse.json({ ok: true }, { headers: CORS_HEADERS });

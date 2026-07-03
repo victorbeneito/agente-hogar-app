@@ -891,6 +891,202 @@ const documents = [
       "Para estores digitales con foto propia, contáctanos para el proceso de envío de imagen.",
   },
 
+  // ─── TARIFA DE PRECIOS ESTORES LISOS (generado desde tarifa_claude_hogar.csv) ───
+  {
+    category: "producto",
+    title: "Cómo leer la tarifa de precios de estores lisos",
+    content:
+      "Los estores enrollables lisos tienen dos nombres comerciales por modelo (ej. CLEAR/ARA): el primero es la versión Blindecor y el segundo la versión Happystor, mismo tejido de dos proveedores distintos con precios propios. " +
+      "Los precios son PVP por unidad ya confeccionada a la medida indicada (ancho x alto en cm), no por metro cuadrado. " +
+      "Blindecor solo tiene precio en algunas medidas concretas (normalmente cada 20 cm); si el cliente pide una medida sin precio de Blindecor, se puede fabricar en Happystor para esa medida exacta, o consultar el precio de Blindecor en el ancho superior más cercano. " +
+      "Happystor tiene precio para todas las medidas de 5 en 5 cm. " +
+      "Plazo de fabricación 2-3 días laborables más envío 24-48h. Si la medida exacta no aparece en la tarifa, dar el precio de la medida más próxima como orientación y ofrecer confirmar el precio exacto con el equipo.",
+  },
+
+  {
+    category: "producto",
+    title: "Tarifa de precios - Estor enrollable liso traslucido CLEAR (Blindecor) / ARA (Happystor)",
+    content:
+      "Precios PVP en euros del estor CLEAR/ARA, por medida ancho x alto en cm. Formato: medida: Blindecor X€ / Happystor Y€.\n" +
+      "50x175: Happystor 34,73€; 55x175: Happystor 34,73€; 60x175: Happystor 34,73€; 65x175: Happystor 34,73€; 70x175: Happystor 34,73€; 75x175: Happystor 34,73€\n" +
+      "80x175: Happystor 19,43€; 85x175: Happystor 37,21€; 90x175: Happystor 37,21€; 95x175: Happystor 37,21€; 100x175: Blindecor 25,77€ / Happystor 21,91€; 105x175: Happystor 40,29€\n" +
+      "110x175: Happystor 40,29€; 115x175: Happystor 40,29€; 120x175: Blindecor 29,40€ / Happystor 24,99€; 125x175: Happystor 43,14€; 130x175: Happystor 43,14€; 135x175: Happystor 43,14€\n" +
+      "140x175: Blindecor 32,76€ / Happystor 27,84€; 145x175: Happystor 46,23€; 150x175: Happystor 46,23€; 155x175: Happystor 46,23€; 160x175: Blindecor 36,38€ / Happystor 30,93€; 165x175: Happystor 48,95€\n" +
+      "170x175: Happystor 48,95€; 175x175: Happystor 48,95€; 180x175: Blindecor 39,58€ / Happystor 33,65€; 50x250: Happystor 40,92€; 55x250: Happystor 40,92€; 60x250: Happystor 40,92€\n" +
+      "65x250: Happystor 40,92€; 70x250: Happystor 40,92€; 75x250: Happystor 40,92€; 80x250: Happystor 40,92€; 85x250: Happystor 40,92€; 90x250: Happystor 40,92€\n" +
+      "95x250: Happystor 40,92€; 100x250: Blindecor 30,14€ / Happystor 25,62€; 105x250: Happystor 44,49€; 110x250: Happystor 44,49€; 115x250: Happystor 44,49€; 120x250: Blindecor 34,35€ / Happystor 29,19€\n" +
+      "125x250: Happystor 48,09€; 130x250: Happystor 48,09€; 135x250: Happystor 48,09€; 140x250: Blindecor 38,58€ / Happystor 32,79€; 145x250: Happystor 51,31€; 150x250: Happystor 51,31€\n" +
+      "155x250: Happystor 51,31€; 160x250: Blindecor 42,36€ / Happystor 36,01€; 165x250: Happystor 54,77€; 170x250: Happystor 54,77€; 175x250: Happystor 54,77€; 180x250: Blindecor 46,44€ / Happystor 39,47€",
+  },
+
+  {
+    category: "producto",
+    title: "Tarifa de precios - Estor enrollable opaco DARK (Blindecor) / DRACO (Happystor)",
+    content:
+      "Precios PVP en euros del estor DARK/DRACO, por medida ancho x alto en cm. Formato: medida: Blindecor X€ / Happystor Y€.\n" +
+      "50x180: Happystor 44,28€; 55x180: Happystor 44,28€; 60x180: Happystor 44,28€; 65x180: Happystor 44,28€; 70x180: Happystor 44,28€; 75x180: Happystor 44,28€\n" +
+      "80x180: Happystor 44,28€; 85x180: Happystor 44,28€; 90x180: Happystor 44,28€; 95x180: Happystor 44,28€; 100x180: Blindecor 31,20€ / Happystor 28,08€; 105x180: Happystor 47,97€\n" +
+      "110x180: Happystor 47,97€; 115x180: Happystor 47,97€; 120x180: Blindecor 35,30€ / Happystor 31,77€; 125x180: Happystor 51,80€; 130x180: Happystor 51,80€; 135x180: Happystor 51,80€\n" +
+      "140x180: Blindecor 39,56€ / Happystor 35,60€; 145x180: Happystor 55,49€; 150x180: Happystor 55,49€; 155x180: Happystor 55,49€; 160x180: Blindecor 43,66€ / Happystor 39,29€; 165x180: Happystor 59,21€\n" +
+      "170x180: Happystor 59,21€; 175x180: Happystor 59,21€; 180x180: Blindecor 47,79€ / Happystor 43,01€; 50x230: Happystor 46,73€; 55x230: Happystor 46,73€; 60x230: Happystor 46,73€\n" +
+      "65x230: Happystor 46,73€; 70x230: Happystor 46,73€; 75x230: Happystor 46,73€; 80x230: Happystor 46,73€; 85x230: Happystor 46,73€; 90x230: Happystor 46,73€\n" +
+      "95x230: Happystor 46,73€; 100x230: Blindecor 33,92€ / Happystor 30,53€; 105x230: Happystor 50,99€; 110x230: Happystor 50,99€; 115x230: Happystor 50,99€; 120x230: Blindecor 38,66€ / Happystor 34,79€\n" +
+      "125x230: Happystor 55,64€; 130x230: Happystor 55,64€; 135x230: Happystor 55,64€; 140x230: Blindecor 43,82€ / Happystor 39,44€; 145x230: Happystor 60,02€; 150x230: Happystor 60,02€\n" +
+      "155x230: Happystor 60,02€; 160x230: Blindecor 48,69€ / Happystor 43,82€; 165x230: Happystor 64,26€; 170x230: Happystor 64,26€; 175x230: Happystor 64,26€; 180x230: Blindecor 53,40€ / Happystor 48,06€",
+  },
+
+  {
+    category: "producto",
+    title: "Tarifa de precios - Estor enrollable screen tecnico LIGHT (Blindecor) / EGEO (Happystor)",
+    content:
+      "Precios PVP en euros del estor LIGHT/EGEO, por medida ancho x alto en cm. Formato: medida: Blindecor X€ / Happystor Y€.\n" +
+      "50x180: Happystor 46,78€; 55x180: Happystor 46,78€; 60x180: Happystor 30,58€; 65x180: Happystor 52,97€; 70x180: Happystor 52,97€; 75x180: Happystor 52,97€\n" +
+      "80x180: Happystor 36,77€; 85x180: Happystor 66,23€; 90x180: Happystor 66,23€; 95x180: Happystor 66,23€; 100x180: Blindecor 55,59€ / Happystor 50,03€; 105x180: Happystor 73,78€\n" +
+      "110x180: Happystor 73,78€; 115x180: Happystor 73,78€; 120x180: Blindecor 63,98€ / Happystor 57,58€; 125x180: Happystor 80,13€; 130x180: Happystor 80,13€; 135x180: Happystor 80,13€\n" +
+      "140x180: Blindecor 72,37€ / Happystor 65,13€; 145x180: Happystor 87,56€; 150x180: Happystor 87,56€; 155x180: Happystor 87,56€; 160x180: Blindecor 80,62€ / Happystor 72,56€; 165x180: Happystor 95,11€\n" +
+      "170x180: Happystor 95,11€; 175x180: Happystor 95,11€; 180x180: Blindecor 89,01€ / Happystor 80,11€; 50x250: Happystor 67,97€; 55x250: Happystor 67,97€; 60x250: Happystor 67,97€\n" +
+      "65x250: Happystor 67,97€; 70x250: Happystor 67,97€; 75x250: Happystor 67,97€; 80x250: Happystor 67,97€; 85x250: Happystor 67,97€; 90x250: Happystor 67,97€\n" +
+      "95x250: Happystor 67,97€; 100x250: Blindecor 57,52€ / Happystor 51,77€; 105x250: Happystor 76,38€; 110x250: Happystor 76,38€; 115x250: Happystor 76,38€; 120x250: Blindecor 66,86€ / Happystor 60,18€\n" +
+      "125x250: Happystor 80,13€; 130x250: Happystor 80,13€; 135x250: Happystor 80,13€; 140x250: Blindecor 76,10€ / Happystor 68,49€; 145x250: Happystor 87,56€; 150x250: Happystor 87,56€\n" +
+      "155x250: Happystor 87,56€; 160x250: Blindecor 85,44€ / Happystor 76,90€; 165x250: Happystor 95,11€; 170x250: Happystor 95,11€; 175x250: Happystor 95,11€; 180x250: Blindecor 97,27€ / Happystor 87,54€",
+  },
+
+  {
+    category: "producto",
+    title: "Tarifa de precios - Estor enrollable LINE (Blindecor) / IRIS (Happystor)",
+    content:
+      "Precios PVP en euros del estor LINE/IRIS, por medida ancho x alto en cm. Formato: medida: Blindecor X€ / Happystor Y€.\n" +
+      "50x180: Happystor 39,18€; 55x180: Happystor 39,18€; 60x180: Happystor 39,18€; 65x180: Happystor 39,18€; 70x180: Happystor 39,18€; 75x180: Happystor 39,18€\n" +
+      "80x180: Happystor 22,98€; 85x180: Happystor 41,68€; 90x180: Happystor 41,68€; 95x180: Happystor 41,68€; 100x180: Blindecor 28,31€ / Happystor 25,48€; 105x180: Happystor 45,37€\n" +
+      "110x180: Happystor 45,37€; 115x180: Happystor 45,37€; 120x180: Blindecor 32,41€ / Happystor 29,17€; 125x180: Happystor 48,94€; 130x180: Happystor 48,94€; 135x180: Happystor 48,94€\n" +
+      "140x180: Blindecor 36,38€ / Happystor 32,74€; 145x180: Happystor 52,75€; 150x180: Happystor 52,75€; 155x180: Happystor 52,75€; 160x180: Blindecor 40,62€ / Happystor 36,55€; 165x180: Happystor 56,80€\n" +
+      "170x180: Happystor 56,80€; 175x180: Happystor 56,80€; 180x180: Blindecor 45,11€ / Happystor 40,60€",
+  },
+
+  {
+    category: "producto",
+    title: "Tarifa de precios - Estor enrollable efecto lino NATURE (Blindecor) / LINEN (Happystor)",
+    content:
+      "Precios PVP en euros del estor NATURE/LINEN, por medida ancho x alto en cm. Formato: medida: Blindecor X€ / Happystor Y€.\n" +
+      "50x180: Happystor 46,17€; 55x180: Happystor 46,17€; 60x180: Happystor 46,17€; 65x180: Happystor 46,17€; 70x180: Happystor 46,17€; 75x180: Happystor 46,17€\n" +
+      "80x180: Happystor 46,17€; 85x180: Happystor 46,17€; 90x180: Happystor 46,17€; 95x180: Happystor 46,17€; 100x180: Blindecor 34,64€ / Happystor 31,17€; 105x180: Happystor 51,03€\n" +
+      "110x180: Happystor 51,03€; 115x180: Happystor 51,03€; 120x180: Blindecor 40,03€ / Happystor 36,03€; 125x180: Happystor 55,34€; 130x180: Happystor 55,34€; 135x180: Happystor 55,34€\n" +
+      "140x180: Blindecor 44,82€ / Happystor 40,34€; 145x180: Happystor 59,68€; 150x180: Happystor 59,68€; 155x180: Happystor 59,68€; 160x180: Blindecor 49,64€ / Happystor 44,68€; 165x180: Happystor 64,13€\n" +
+      "170x180: Happystor 64,13€; 175x180: Happystor 64,13€; 180x180: Blindecor 54,59€ / Happystor 49,13€",
+  },
+
+  {
+    category: "producto",
+    title: "Tarifa de precios - Estor enrollable dia y noche triple tejido TRINIGHT (Blindecor) / BOHEM (Happystor)",
+    content:
+      "Precios PVP en euros del estor TRINIGHT/BOHEM, por medida ancho x alto en cm. Formato: medida: Blindecor X€ / Happystor Y€.\n" +
+      "50x180: Happystor 56,60€; 55x180: Happystor 56,60€; 60x180: Happystor 56,60€; 65x180: Happystor 56,60€; 70x180: Happystor 56,60€; 75x180: Happystor 56,60€\n" +
+      "80x180: Happystor 37,90€; 85x180: Happystor 63,57€; 90x180: Happystor 63,57€; 95x180: Happystor 63,57€; 100x180: Blindecor 52,79€ / Happystor 44,87€; 105x180: Happystor 70,90€\n" +
+      "110x180: Happystor 70,90€; 115x180: Happystor 70,90€; 120x180: Blindecor 61,41€ / Happystor 52,20€; 125x180: Happystor 78,19€; 130x180: Happystor 78,19€; 135x180: Happystor 78,19€\n" +
+      "140x180: Blindecor 69,99€ / Happystor 59,49€; 145x180: Happystor 86,22€; 150x180: Happystor 86,22€; 155x180: Happystor 86,22€; 160x180: Blindecor 79,43€ / Happystor 67,52€; 165x180: Happystor 91,82€\n" +
+      "170x180: Happystor 91,82€; 175x180: Happystor 91,82€; 180x180: Blindecor 86,02€ / Happystor 73,12€",
+  },
+
+  {
+    category: "producto",
+    title: "Tarifa de precios - Estor enrollable DAY (Blindecor) / VELA (Happystor)",
+    content:
+      "Precios PVP en euros del estor DAY/VELA, por medida ancho x alto en cm. Formato: medida: Blindecor X€ / Happystor Y€.\n" +
+      "50x180: Happystor 70,21€; 55x180: Happystor 70,21€; 60x180: Happystor 70,21€; 65x180: Happystor 70,21€; 70x180: Happystor 70,21€; 75x180: Happystor 70,21€\n" +
+      "80x180: Happystor 70,21€; 85x180: Happystor 70,21€; 90x180: Happystor 70,21€; 95x180: Happystor 70,21€; 100x180: Blindecor 56,02€ / Happystor 50,41€; 105x180: Happystor 77,29€\n" +
+      "110x180: Happystor 77,29€; 115x180: Happystor 77,29€; 120x180: Blindecor 63,87€ / Happystor 57,49€; 125x180: Happystor 84,22€; 130x180: Happystor 84,22€; 135x180: Happystor 84,22€\n" +
+      "140x180: Blindecor 71,57€ / Happystor 64,42€; 145x180: Happystor 91,29€; 150x180: Happystor 91,29€; 155x180: Happystor 91,29€; 160x180: Blindecor 79,43€ / Happystor 71,49€; 165x180: Happystor 98,24€\n" +
+      "170x180: Happystor 98,24€; 175x180: Happystor 98,24€; 180x180: Blindecor 87,16€ / Happystor 78,44€",
+  },
+
+  {
+    category: "producto",
+    title: "Tarifa de precios - Estor enrollable dia y noche NIGHT (Blindecor) / LIRA (Happystor)",
+    content:
+      "Precios PVP en euros del estor NIGHT/LIRA, por medida ancho x alto en cm. Formato: medida: Blindecor X€ / Happystor Y€.\n" +
+      "50x180: Happystor 53,43€; 55x180: Happystor 53,43€; 60x180: Happystor 53,43€; 65x180: Happystor 53,43€; 70x180: Happystor 53,43€; 75x180: Happystor 53,43€\n" +
+      "80x180: Happystor 34,73€; 85x180: Happystor 58,06€; 90x180: Happystor 58,06€; 95x180: Happystor 58,06€; 100x180: Blindecor 46,31€ / Happystor 39,36€; 105x180: Happystor 64,13€\n" +
+      "110x180: Happystor 64,13€; 115x180: Happystor 64,13€; 120x180: Blindecor 53,45€ / Happystor 45,43€; 125x180: Happystor 69,71€; 130x180: Happystor 69,71€; 135x180: Happystor 69,71€\n" +
+      "140x180: Blindecor 60,01€ / Happystor 51,01€; 145x180: Happystor 75,17€; 150x180: Happystor 75,17€; 155x180: Happystor 75,17€; 160x180: Blindecor 66,44€ / Happystor 56,47€; 165x180: Happystor 81,92€\n" +
+      "170x180: Happystor 81,92€; 175x180: Happystor 81,92€; 180x180: Blindecor 74,38€ / Happystor 63,22€; 50x250: Happystor 64,13€; 55x250: Happystor 64,13€; 60x250: Happystor 64,13€\n" +
+      "65x250: Happystor 64,13€; 70x250: Happystor 64,13€; 75x250: Happystor 64,13€; 80x250: Happystor 64,13€; 85x250: Happystor 64,13€; 90x250: Happystor 64,13€\n" +
+      "95x250: Happystor 64,13€; 100x250: Blindecor 53,45€ / Happystor 45,43€; 105x250: Happystor 70,81€; 110x250: Happystor 70,81€; 115x250: Happystor 70,81€; 120x250: Blindecor 61,31€ / Happystor 52,11€\n" +
+      "125x250: Happystor 77,49€; 130x250: Happystor 77,49€; 135x250: Happystor 77,49€; 140x250: Blindecor 69,17€ / Happystor 58,79€; 145x250: Happystor 84,04€; 150x250: Happystor 84,04€\n" +
+      "155x250: Happystor 84,04€; 160x250: Blindecor 76,87€ / Happystor 65,34€; 165x250: Happystor 90,72€; 170x250: Happystor 90,72€; 175x250: Happystor 90,72€; 180x250: Blindecor 84,72€ / Happystor 72,02€",
+  },
+
+  {
+    category: "producto",
+    title: "Tarifa de precios - Estor de puerta traslucido DOOR CLEAR (Blindecor) / AURE (Happystor)",
+    content:
+      "Precios PVP en euros del estor DOOR CLEAR/AURE, por medida ancho x alto en cm. Formato: medida: Blindecor X€ / Happystor Y€.\n" +
+      "37x180: Blindecor 16,59€ / Happystor 14,93€; 42x180: Blindecor 17,49€ / Happystor 15,74€; 52x180: Blindecor 19,63€ / Happystor 17,67€; 62x180: Blindecor 21,62€ / Happystor 19,46€; 67x180: Blindecor 22,83€ / Happystor 20,55€; 87x180: Blindecor 26,33€ / Happystor 23,69€\n" +
+      "107x180: Blindecor 29,82€ / Happystor 26,84€; 140x180: Blindecor 36,06€ / Happystor 32,46€",
+  },
+
+  {
+    category: "producto",
+    title: "Tarifa de precios - Estor de puerta opaco DOOR DARK (Blindecor) / ZEUS (Happystor)",
+    content:
+      "Precios PVP en euros del estor DOOR DARK/ZEUS, por medida ancho x alto en cm. Formato: medida: Blindecor X€ / Happystor Y€.\n" +
+      "37x180: Blindecor 19,53€ / Happystor 17,57€; 42x180: Blindecor 20,64€ / Happystor 18,57€; 52x180: Blindecor 23,18€ / Happystor 20,86€; 62x180: Blindecor 25,88€ / Happystor 23,29€; 67x180: Blindecor 27,15€ / Happystor 24,43€; 87x180: Blindecor 32,23€ / Happystor 29,01€\n" +
+      "107x180: Blindecor 36,83€ / Happystor 33,15€; 140x180: Blindecor 45,25€ / Happystor 40,72€",
+  },
+
+  {
+    category: "producto",
+    title: "Tarifa de precios - Estor enrollable digital con foto o estampado personalizado",
+    content:
+      "Precios PVP en euros del estor ESTAMPADO DIGITAL, por medida ancho x alto en cm. Formato: medida: Blindecor X€ / Happystor Y€.\n" +
+      "80x180: Blindecor 60,65€ / Happystor 60,65€; 85x180: Blindecor 65,45€ / Happystor 65,45€; 90x180: Blindecor 65,45€ / Happystor 65,45€; 95x180: Blindecor 70,21€ / Happystor 70,21€; 100x180: Blindecor 70,21€ / Happystor 70,21€; 105x180: Blindecor 75,34€ / Happystor 75,34€\n" +
+      "110x180: Blindecor 75,34€ / Happystor 75,34€; 115x180: Blindecor 80,47€ / Happystor 80,47€; 120x180: Blindecor 80,47€ / Happystor 80,47€; 125x180: Blindecor 85,32€ / Happystor 85,32€; 130x180: Blindecor 85,32€ / Happystor 85,32€; 135x180: Blindecor 90,03€ / Happystor 90,03€\n" +
+      "140x180: Blindecor 90,03€ / Happystor 90,03€; 145x180: Blindecor 95,44€ / Happystor 95,44€; 150x180: Blindecor 95,44€ / Happystor 95,44€; 155x180: Blindecor 100,15€ / Happystor 100,15€; 160x180: Blindecor 100,15€ / Happystor 100,15€; 165x180: Blindecor 105,00€ / Happystor 105,00€\n" +
+      "170x180: Blindecor 105,00€ / Happystor 105,00€; 175x180: Blindecor 109,85€ / Happystor 109,85€; 180x180: Blindecor 109,85€ / Happystor 109,85€; 185x180: Blindecor 128,15€ / Happystor 128,15€; 190x180: Blindecor 128,15€ / Happystor 128,15€; 195x180: Blindecor 133,42€ / Happystor 133,42€\n" +
+      "200x180: Blindecor 133,42€ / Happystor 133,42€; 80x250: Blindecor 73,40€ / Happystor 73,40€; 85x250: Blindecor 79,78€ / Happystor 79,78€; 90x250: Blindecor 79,78€ / Happystor 79,78€; 95x250: Blindecor 86,02€ / Happystor 86,02€; 100x250: Blindecor 86,02€ / Happystor 86,02€\n" +
+      "105x250: Blindecor 92,25€ / Happystor 92,25€; 110x250: Blindecor 92,25€ / Happystor 92,25€; 115x250: Blindecor 99,18€ / Happystor 99,18€; 120x250: Blindecor 99,18€ / Happystor 99,18€; 125x250: Blindecor 105,42€ / Happystor 105,42€; 130x250: Blindecor 105,42€ / Happystor 105,42€\n" +
+      "135x250: Blindecor 112,49€ / Happystor 112,49€; 140x250: Blindecor 112,49€ / Happystor 112,49€; 145x250: Blindecor 118,72€ / Happystor 118,72€; 150x250: Blindecor 118,72€ / Happystor 118,72€; 155x250: Blindecor 125,10€ / Happystor 125,10€; 160x250: Blindecor 125,10€ / Happystor 125,10€\n" +
+      "165x250: Blindecor 143,26€ / Happystor 143,26€; 170x250: Blindecor 143,26€ / Happystor 143,26€; 175x250: Blindecor 151,02€ / Happystor 151,02€; 180x250: Blindecor 151,02€ / Happystor 151,02€; 185x250: Blindecor 157,95€ / Happystor 157,95€; 190x250: Blindecor 157,95€ / Happystor 157,95€\n" +
+      "195x250: Blindecor 164,88€ / Happystor 164,88€; 200x250: Blindecor 164,88€ / Happystor 164,88€",
+  },
+
+  {
+    category: "producto",
+    title: "Tarifa de precios - Estor enrollable WAVE (Blindecor) / MEDITERRANEO (Happystor)",
+    content:
+      "Precios PVP en euros del estor WAVE/MEDITERRANEO, por medida ancho x alto en cm. Formato: medida: Blindecor X€ / Happystor Y€.\n" +
+      "50x180: Happystor 66,67€; 55x180: Happystor 66,67€; 60x180: Happystor 66,67€; 65x180: Happystor 66,67€; 70x180: Happystor 66,67€; 75x180: Happystor 66,67€\n" +
+      "80x180: Happystor 47,97€; 85x180: Happystor 74,32€; 90x180: Happystor 74,32€; 95x180: Happystor 74,32€; 100x180: Blindecor 65,44€ / Happystor 55,62€; 105x180: Happystor 83,43€\n" +
+      "110x180: Happystor 83,43€; 115x180: Happystor 83,43€; 120x180: Blindecor 76,15€ / Happystor 64,73€; 125x180: Happystor 93,28€; 130x180: Happystor 93,28€; 135x180: Happystor 93,28€\n" +
+      "140x180: Blindecor 87,74€ / Happystor 74,58€; 145x180: Happystor 104,82€; 150x180: Happystor 104,82€; 155x180: Happystor 104,82€; 160x180: Blindecor 101,32€ / Happystor 86,12€; 165x180: Happystor 114,29€\n" +
+      "170x180: Happystor 114,29€; 175x180: Happystor 114,29€; 180x180: Blindecor 112,46€ / Happystor 95,59€",
+  },
+
+  {
+    category: "producto",
+    title: "Tarifa de precios - Estor de puerta dia y noche DOOR N&D (Blindecor) / INDUS (Happystor)",
+    content:
+      "Precios PVP en euros del estor DOOR N&D/INDUS, por medida ancho x alto en cm. Formato: medida: Blindecor X€ / Happystor Y€.\n" +
+      "37x180: Blindecor 22,57€ / Happystor 20,31€; 42X180: Blindecor 24,00€ / Happystor 21,60€; 47X180: Blindecor 25,43€ / Happystor 22,89€; 52X180: Blindecor 27,28€ / Happystor 24,55€; 57X180: Blindecor 28,71€ / Happystor 25,84€; 62X180: Blindecor 30,14€ / Happystor 27,12€\n" +
+      "67X180: Blindecor 31,86€ / Happystor 28,67€; 72X180: Blindecor 33,58€ / Happystor 30,22€; 77X180: Blindecor 35,30€ / Happystor 31,77€; 82X180: Blindecor 36,73€ / Happystor 33,05€; 87X180: Blindecor 38,71€ / Happystor 34,84€; 92X180: Blindecor 40,59€ / Happystor 36,53€\n" +
+      "97X180: Blindecor 42,57€ / Happystor 38,32€; 107X180: Blindecor 44,72€ / Happystor 40,25€; 120X180: Blindecor 48,45€ / Happystor 43,60€; 130X180: Blindecor 51,57€ / Happystor 46,41€; 140X180: Blindecor 55,43€ / Happystor 49,89€",
+  },
+
+  {
+    category: "producto",
+    title: "Tarifa de precios - Estor enrollable liso blanco optico CLEAR BLANCO OPTICO",
+    content:
+      "Precios PVP en euros del estor CLEAR BLANCO OPTICO, por medida ancho x alto en cm. Formato: medida: Blindecor X€ / Happystor Y€.\n" +
+      "50x175: Happystor 31,82€; 55x175: Happystor 31,82€; 60x175: Happystor 31,82€; 65x175: Happystor 31,82€; 70x175: Happystor 31,82€; 75x175: Happystor 31,82€\n" +
+      "80x175: Happystor 31,82€; 85x175: Happystor 33,51€; 90x175: Happystor 33,51€; 95x175: Happystor 35,20€; 100x175: Blindecor 41,41€ / Happystor 35,20€; 105x175: Happystor 36,77€\n" +
+      "110x175: Happystor 36,77€; 115x175: Happystor 38,68€; 120x175: Blindecor 45,51€ / Happystor 38,68€; 125x175: Happystor 40,15€; 130x175: Happystor 40,15€; 135x175: Happystor 42,28€\n" +
+      "140x175: Blindecor 49,74€ / Happystor 42,28€; 145x175: Happystor 43,41€; 150x175: Happystor 43,41€; 155x175: Happystor 45,77€; 160x175: Blindecor 53,85€ / Happystor 45,77€; 165x175: Happystor 46,67€\n" +
+      "170x175: Happystor 46,67€; 175x175: Happystor 49,37€; 180x175: Blindecor 58,08€ / Happystor 49,37€; 50x250: Happystor 49,37€; 55x250: Happystor 49,37€; 60x250: Happystor 49,37€\n" +
+      "65x250: Happystor 49,37€; 70x250: Happystor 49,37€; 75x250: Happystor 49,37€; 80x250: Happystor 49,37€; 85x250: Happystor 49,37€; 90x250: Happystor 49,37€\n" +
+      "95x250: Happystor 49,37€; 100x250: Blindecor 58,08€ / Happystor 49,37€; 105x250: Happystor 42,85€; 110x250: Happystor 42,85€; 115x250: Happystor 42,85€; 120x250: Blindecor 50,41€ / Happystor 42,85€\n" +
+      "125x250: Happystor 47,01€; 130x250: Happystor 47,01€; 135x250: Happystor 47,01€; 140x250: Blindecor 55,30€ / Happystor 47,01€; 145x250: Happystor 51,28€; 150x250: Happystor 51,28€\n" +
+      "155x250: Happystor 51,28€; 160x250: Blindecor 60,33€ / Happystor 51,28€; 165x250: Happystor 55,55€; 170x250: Happystor 55,55€; 175x250: Happystor 55,55€; 180x250: Blindecor 65,36€ / Happystor 55,55€",
+  },
+
 ];
 
 async function main() {

@@ -314,7 +314,7 @@
 
   function notifyAbandon() {
     if (!hasSentMessage) return;
-    if (conversationStatus === "closed" || conversationStatus === "human") return;
+    if (conversationStatus === "closed") return;
     var payload = JSON.stringify({ session_id: sessionId });
     if (navigator.sendBeacon) {
       navigator.sendBeacon(API_BASE + "/api/conversations/abandon", new Blob([payload], { type: "application/json" }));
