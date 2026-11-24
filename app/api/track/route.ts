@@ -3,6 +3,7 @@ import { supabaseAdmin } from "@/lib/supabase";
 import { getClientIp, lookupGeo, countryCodeToFlag } from "@/lib/geo";
 import { parseUserAgent } from "@/lib/device";
 import { sendTelegramMessage } from "@/lib/telegram";
+import { isBotUserAgent, isNotifiableCountry } from "@/lib/botGuard";
 
 const MAX_PAGES_VISITED = 50;
 
@@ -31,8 +32,14 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Bots y navegadores automatizados: no se registran ni se notifican
+  const userAgent = request.headers.get("user-agent");
+  if (isBotUserAgent(userAgent)) {
+    return NextResponse.json({ ok: true, ignored: true }, { headers: CORS_HEADERS });
+  }
+
   const ip = getClientIp(request.headers);
-  const { device, browser } = parseUserAgent(request.headers.get("user-agent"));
+  const { device, browser } = parseUserAgent(userAgent);
 
   const { data: existing } = await supabaseAdmin
     .from("visitors")
@@ -90,16 +97,19 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const flag = countryCodeToFlag(geo.countryCode);
-  const deviceLabel = device === "mobile" ? "móvil" : device === "tablet" ? "tablet" : "escritorio";
-  const rawVercelCode = request.headers.get("x-vercel-ip-country") ?? "–";
+  // Visitantes de fuera de los países de venta se guardan (estadísticas)
+  // pero no generan aviso en Telegram
+  if (isNotifiableCountry(geo.countryCode)) {
+    const flag = countryCodeToFlag(geo.countryCode);
+    const deviceLabel = device === "mobile" ? "móvil" : device === "tablet" ? "tablet" : "escritorio";
 
-  await sendTelegramMessage(
-    `👤 Nuevo visitante desde ${flag} ${geo.country ?? "Desconocido"}\n` +
-      `Viendo: ${page}\n` +
-      `Dispositivo: ${deviceLabel} (${browser})\n` +
-      `IP: ${ip} · Vercel-code: ${rawVercelCode}`
-  );
+    await sendTelegramMessage(
+      `👤 Nuevo visitante desde ${flag} ${geo.country ?? "Desconocido"}\n` +
+        `Viendo: ${page}\n` +
+        `Dispositivo: ${deviceLabel} (${browser})\n` +
+        `IP: ${ip}`
+    );
+  }
 
   return NextResponse.json({ ok: true, new_visitor: true }, { headers: CORS_HEADERS });
 }

@@ -1,6 +1,7 @@
 import { supabaseAdmin } from "@/lib/supabase";
 import { sendTelegramMessage } from "@/lib/telegram";
-import { countryCodeToFlag, lookupGeo } from "@/lib/geo";
+import { countryCodeToFlag, getClientIp, lookupGeo } from "@/lib/geo";
+import { assertCanOpenChat, isNotifiableCountry } from "@/lib/botGuard";
 
 export async function getOrCreateConversation(sessionId: string, requestHeaders?: Headers) {
   const { data: existing } = await supabaseAdmin
@@ -25,6 +26,10 @@ export async function getOrCreateConversation(sessionId: string, requestHeaders?
     .order("last_seen", { ascending: false })
     .limit(1)
     .maybeSingle();
+
+  // Límite de chats nuevos por IP (evita bots rotando session_id)
+  const ip = requestHeaders ? getClientIp(requestHeaders) : "";
+  await assertCanOpenChat(ip);
 
   if (visitor) {
     await supabaseAdmin.from("visitors").update({ has_chatted: true }).eq("session_id", sessionId);
@@ -51,6 +56,7 @@ export async function getOrCreateConversation(sessionId: string, requestHeaders?
         country_code: countryCode ?? null,
         entry_page: visitor?.current_page ?? null,
         referrer: visitor?.referrer ?? null,
+        ip: ip || null,
       },
     })
     .select("id, status")
@@ -64,6 +70,9 @@ export async function getOrCreateConversation(sessionId: string, requestHeaders?
 }
 
 export async function notifyNewChat(country: string | null | undefined, countryCode: string | null | undefined, firstMessage: string) {
+  // Chats desde fuera de los países de venta no generan aviso (el bot sí les responde)
+  if (!isNotifiableCountry(countryCode)) return;
+
   const flag = countryCodeToFlag(countryCode ?? null);
   await sendTelegramMessage(
     `💬 Nuevo chat abierto - Visitante desde ${flag} ${country ?? "Desconocido"} pregunta:\n"${firstMessage}"`

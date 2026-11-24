@@ -18,6 +18,13 @@ interface TelegramUpdate {
 }
 
 export async function POST(request: NextRequest) {
+  // Si TELEGRAM_WEBHOOK_SECRET está configurado, Telegram envía ese valor en la
+  // cabecera X-Telegram-Bot-Api-Secret-Token: cualquier otra petición es falsa.
+  const webhookSecret = process.env.TELEGRAM_WEBHOOK_SECRET;
+  if (webhookSecret && request.headers.get("x-telegram-bot-api-secret-token") !== webhookSecret) {
+    return NextResponse.json({ ok: false }, { status: 401 });
+  }
+
   const update = (await request.json().catch(() => null)) as TelegramUpdate | null;
   const message = update?.message;
   const text = message?.text?.trim();

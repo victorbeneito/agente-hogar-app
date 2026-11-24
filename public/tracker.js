@@ -28,6 +28,10 @@
     }
   }
 
+  // Navegadores controlados por automatización (Selenium, Puppeteer, Playwright...)
+  // exponen navigator.webdriver = true: son bots, no se trackean.
+  if (navigator.webdriver) return;
+
   function sendTrack() {
     var payload = JSON.stringify({
       session_id: getSessionId(),

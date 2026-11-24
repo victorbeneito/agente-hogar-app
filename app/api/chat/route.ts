@@ -5,6 +5,7 @@ import { openai, CHAT_MODEL } from "@/lib/openai";
 import { getOrCreateConversation, notifyNewChat, triggerHandoff } from "@/lib/conversations";
 import { searchKnowledgeBase } from "@/lib/rag";
 import { calcularEstorDigitalAMedida } from "@/lib/estorDigitalMedida";
+import { assertCanSendMessage, ChatRateLimitError, isBotUserAgent, MAX_MESSAGE_LENGTH } from "@/lib/botGuard";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -161,7 +162,31 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const conversation = await getOrCreateConversation(sessionId, request.headers);
+  // Protección: bots fuera, mensajes acotados y límites de frecuencia
+  if (isBotUserAgent(request.headers.get("user-agent"))) {
+    return NextResponse.json({ error: "No permitido" }, { status: 403, headers: CORS_HEADERS });
+  }
+
+  if (message.length > MAX_MESSAGE_LENGTH) {
+    return NextResponse.json(
+      { reply: `Tu mensaje es demasiado largo. Por favor, resúmelo en menos de ${MAX_MESSAGE_LENGTH} caracteres.`, status: null },
+      { status: 400, headers: CORS_HEADERS }
+    );
+  }
+
+  let conversation: Awaited<ReturnType<typeof getOrCreateConversation>>;
+  try {
+    conversation = await getOrCreateConversation(sessionId, request.headers);
+    await assertCanSendMessage(conversation.id);
+  } catch (err) {
+    if (err instanceof ChatRateLimitError) {
+      return NextResponse.json(
+        { reply: err.userMessage, status: null },
+        { status: 429, headers: CORS_HEADERS }
+      );
+    }
+    throw err;
+  }
 
   await supabaseAdmin.from("messages").insert({
     conversation_id: conversation.id,
@@ -186,12 +211,16 @@ export async function POST(request: NextRequest) {
     .from("messages")
     .select("role, content")
     .eq("conversation_id", conversation.id)
-    .order("created_at", { ascending: true })
+    .in("role", ["user", "assistant", "human_agent"])
+    .order("created_at", { ascending: false })
     .limit(10);
+
+  // Se piden los 10 más recientes (orden descendente) y se reordenan cronológicamente
+  const recentHistory = (history ?? []).reverse();
 
   const workingMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
     { role: "system", content: SYSTEM_PROMPT },
-    ...(history ?? []).map((m) => ({
+    ...recentHistory.map((m) => ({
       role: (m.role === "human_agent" ? "assistant" : m.role) as "user" | "assistant",
       content: m.content,
     })),
