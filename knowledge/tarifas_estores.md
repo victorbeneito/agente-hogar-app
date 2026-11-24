@@ -435,6 +435,14 @@ estor concreto.
 
 ## Estor enrollable digital foto o estampado personalizado
 
+Estas son las tallas estándar que sirven de base para el pedido. Los estores
+digitales **sí se fabrican a cualquier medida** de ancho y largo. Precio de una
+medida personalizada = precio de su talla base: largo ≤180 → largo 180; largo
+181-250 → largo 250; ancho redondeado hacia arriba al múltiplo de 5 (ej. 160x150
+→ 160x180; 133x210 → 135x250). Ancho <80, ancho >200 o largo >250: consultar
+precio con el equipo. El cliente indica la medida exacta en los comentarios del
+pedido. Proceso completo: https://elhogardetusuenos.com/medidas-personalizadas
+
 | Medida (ancho x alto cm) | Precio Blindecor | Precio Happystor |
 |---|---|---|
 | 80x180 | 60,65 EUR | 60,65 EUR |

@@ -75,9 +75,39 @@ const documents = [
       "Los estores digitales tienen una imagen/estampado impreso sobre tejido traslúcido. " +
       "Hay dos tipos: (1) diseños predefinidos del catálogo (cocina, paisajes, ciudades, infantil, zen, fantasía, juvenil, varios) y (2) estores con foto personalizada del cliente. " +
       "Tallas estándar en todas las categorías digitales: de 80x180 cm a 200x180 cm, y de 80x250 cm a 200x250 cm, en incrementos de 5 cm. Tirador: Izquierda o Derecha. " +
+      "IMPORTANTE: los estores digitales se fabrican bajo pedido y SÍ se hacen a medida, tanto de ancho como de largo (ej. 160x150, 133x120...). " +
+      "Las tallas estándar son solo la base para hacer el pedido; ver la ficha 'Estores digitales a medida' y https://elhogardetusuenos.com/medidas-personalizadas. " +
       "Para fotos personalizadas del cliente: el equipo confirma los requisitos técnicos al hacer el pedido. Precio base ~55€ con descuentos habituales aplicados. " +
       "Servicio de ajuste de fotografía: 30,25€ (https://www.elhogardetusuenos.com/productos/diseno-personalizado). " +
       "Marcas disponibles: Happystor y Blindecor.",
+  },
+
+  // ─── ESTORES DIGITALES: MEDIDAS PERSONALIZADAS ────────────────────────────
+  {
+    category: "producto",
+    title: "Estores digitales a medida — medidas personalizadas de ancho y largo (cómo pedirlos)",
+    content:
+      "¿Hacéis estores digitales a medida? SÍ. Los estores enrollables con estampación digital (diseños del catálogo y fotos personalizadas) se fabrican bajo pedido " +
+      "y se pueden hacer a cualquier medida de ancho y de largo, aunque no aparezca en la lista de tallas estándar (ej. 160x150 cm, 1,60x1,50 m, 95x130 cm). " +
+      "Nunca hay que decir que no tenemos una medida de estor digital: se hace a medida. " +
+      "Página con el proceso: https://elhogardetusuenos.com/medidas-personalizadas\n" +
+      "Cómo pedir un estor digital a medida:\n" +
+      "1. Elegir en la web la talla estándar que sirve de base. Regla para calcular la TALLA BASE:\n" +
+      "   - LARGO base: si el largo pedido es de 180 cm o menos → largo 180. Si el largo está entre 181 y 250 cm → largo 250.\n" +
+      "   - ANCHO base: el ancho pedido redondeado HACIA ARRIBA al múltiplo de 5 (133 → 135, 160 → 160, 172 → 175).\n" +
+      "   - Ejemplos: 160x150 → talla base 160x180 · 133x210 → talla base 135x250 · 95x120 → talla base 95x180 · 182x240 → talla base 185x250.\n" +
+      "   El proveedor fabrica el estor y lo ajusta a la medida exacta.\n" +
+      "2. Completar el pedido: tras los datos personales y el método de envío aparece un campo de comentarios (sección 'Método de envío').\n" +
+      "3. Escribir en los comentarios: ancho exacto en cm, largo exacto en cm, obstáculos si los hay (radiador, mesa...) y tipo de ventana (ventana, puerta...). " +
+      "Ejemplo: 'Medidas personalizadas para estor enrollable: Ancho 150cm, Largo 200cm. Hay un radiador bajo la ventana. Es una ventana de dormitorio.'\n" +
+      "Precio orientativo: el de la TALLA BASE en la tarifa de estor digital (ej. 160x150 → 160x180 = 100,15€; 133x210 → 135x250 = 112,49€). " +
+      "El proveedor confirma las medidas antes de fabricar y puede ajustar el presupuesto si es necesario.\n" +
+      "Notas técnicas: la medida indicada es la total incluyendo mecanismos; la tela estampada es 3 cm más estrecha (1,5 cm por lado). Ej.: hueco de 150 cm → estor de 150 cm total con tela de 147 cm. " +
+      "Si hay obstáculos o se quiere ver el dibujo completo, indicarlo en los comentarios.\n" +
+      "Plazo: los estores a medida pueden necesitar 7-15 días hábiles adicionales de fabricación.\n" +
+      "Medidas FUERA DE RANGO (ancho menor de 80 cm, ancho mayor de 200 cm o largo mayor de 250 cm; ej. 70x120, 300x200): no hay talla base en la web, " +
+      "pero también se pueden estudiar. No dar precio: indicar que hay que consultarlo antes de hacer el pedido " +
+      "por email a info@elhogardetusuenos.com, teléfono 684 004 525 / 961 154 226 o WhatsApp https://wa.me/34684004525, u ofrecer pasar con una persona del equipo.",
   },
 
   // ─── ESTORES DIGITALES: COCINA (frutas, flores, plantas) ─────────────────
@@ -886,8 +916,10 @@ const documents = [
       "Horario de atención: lunes a viernes de 9:00 a 18:00 h (hora España). " +
       "Formas de contacto: " +
       "• Este chat (asistente IA disponible 24/7). Para hablar con una persona escribe 'quiero hablar con una persona'. " +
-      "• Email: contacto@elhogardetusuenos.com — respuesta en 24 h hábiles. " +
+      "• Email: info@elhogardetusuenos.com — respuesta en 24 h hábiles. " +
+      "• Teléfono: 684 004 525 (móvil) y 961 154 226 (fijo). WhatsApp: https://wa.me/34684004525. " +
       "Para dudas sobre medidas de estores, indícanos el ancho y alto del hueco y te asesoramos sin compromiso. " +
+      "Estores digitales a medida: https://elhogardetusuenos.com/medidas-personalizadas. " +
       "Para estores digitales con foto propia, contáctanos para el proceso de envío de imagen.",
   },
 
@@ -1038,6 +1070,9 @@ const documents = [
     title: "Tarifa de precios - Estor enrollable digital con foto o estampado personalizado",
     content:
       "Precios PVP en euros del estor ESTAMPADO DIGITAL, por medida ancho x alto en cm. Formato: medida: Blindecor X€ / Happystor Y€.\n" +
+      "Son las tallas estándar que sirven de base para el pedido. Los estores digitales SÍ se hacen a cualquier medida (ancho y largo). Precio de una medida personalizada = precio de su TALLA BASE: " +
+      "largo ≤180 → largo 180; largo 181-250 → largo 250; ancho redondeado hacia arriba al múltiplo de 5 (ej. 160x150 → 160x180; 133x210 → 135x250). " +
+      "Ancho <80, ancho >200 o largo >250: consultar precio con el equipo. Proceso: https://elhogardetusuenos.com/medidas-personalizadas\n" +
       "80x180: Blindecor 60,65€ / Happystor 60,65€; 85x180: Blindecor 65,45€ / Happystor 65,45€; 90x180: Blindecor 65,45€ / Happystor 65,45€; 95x180: Blindecor 70,21€ / Happystor 70,21€; 100x180: Blindecor 70,21€ / Happystor 70,21€; 105x180: Blindecor 75,34€ / Happystor 75,34€\n" +
       "110x180: Blindecor 75,34€ / Happystor 75,34€; 115x180: Blindecor 80,47€ / Happystor 80,47€; 120x180: Blindecor 80,47€ / Happystor 80,47€; 125x180: Blindecor 85,32€ / Happystor 85,32€; 130x180: Blindecor 85,32€ / Happystor 85,32€; 135x180: Blindecor 90,03€ / Happystor 90,03€\n" +
       "140x180: Blindecor 90,03€ / Happystor 90,03€; 145x180: Blindecor 95,44€ / Happystor 95,44€; 150x180: Blindecor 95,44€ / Happystor 95,44€; 155x180: Blindecor 100,15€ / Happystor 100,15€; 160x180: Blindecor 100,15€ / Happystor 100,15€; 165x180: Blindecor 105,00€ / Happystor 105,00€\n" +

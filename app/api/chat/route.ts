@@ -4,6 +4,7 @@ import { supabaseAdmin } from "@/lib/supabase";
 import { openai, CHAT_MODEL } from "@/lib/openai";
 import { getOrCreateConversation, notifyNewChat, triggerHandoff } from "@/lib/conversations";
 import { searchKnowledgeBase } from "@/lib/rag";
+import { calcularEstorDigitalAMedida } from "@/lib/estorDigitalMedida";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -30,6 +31,14 @@ Escribe siempre en español. Sé cercano y directo, como un compañero del equip
 4. NO INVENTES PRECIOS, TALLAS NI CARACTERÍSTICAS.
    Si el catálogo no tiene ese dato, di que no tienes el dato concreto y ofrece hablar con una persona.
 
+5. UNA MEDIDA NO ES UN PRODUCTO: LOS ESTORES SE HACEN A MEDIDA.
+   La regla 2 es para diseños o referencias que no existen, NO para medidas. Los estores enrollables (lisos y digitales) se fabrican bajo pedido: que una medida no aparezca en la lista de tallas estándar o en la tarifa NO significa que no la tengamos. Nunca respondas "no tenemos esa medida".
+   - Estor DIGITAL (estampado, diseño del catálogo o foto propia) con una medida concreta (aunque sea solo el ancho) → llama SIEMPRE a "calcular_estor_digital_a_medida" con las medidas en cm (1,60 m = 160 cm; 3 metros = 300 cm). No calcules tú la talla ni el precio: usa exactamente la talla base, el precio y la indicación que devuelva. Si devuelve fuera_de_rango, no des ningún precio.
+   - Estor LISO con una medida concreta → busca en el catálogo y da el precio de la tarifa.
+   Acompaña siempre el enlace https://elhogardetusuenos.com/medidas-personalizadas cuando sea un estor digital a medida.
+
+6. ESCALA A UNA PERSONA cuando:
+
 5. ESCALA A UNA PERSONA cuando:
    - El cliente lo pida explícitamente.
    - Esté frustrado o insatisfecho con tus respuestas.
@@ -40,7 +49,8 @@ Escribe siempre en español. Sé cercano y directo, como un compañero del equip
 ═══ COMPORTAMIENTO ESPERADO ═══
 - Preguntan dónde están las fundas nórdicas → buscas en catálogo → das el enlace directo.
 - Preguntan por un diseño específico que no existe → buscas → dices que no lo tienes → ofreces persona o categoría alternativa SI EL CLIENTE LA PIDE.
-- Preguntan por política de envíos → buscas en catálogo → respondes con los datos exactos del catálogo.`;
+- Preguntan por política de envíos → buscas en catálogo → respondes con los datos exactos del catálogo.
+- Piden un estor digital de 160x150 → llamas a calcular_estor_digital_a_medida(160, 150) → "¡Sí, lo hacemos a medida!" → explicas que se elige la talla base que devuelve y se indica 160x150 en los comentarios del pedido → precio orientativo → enlace a medidas personalizadas.`;
 
 const TOOLS: OpenAI.Chat.Completions.ChatCompletionTool[] = [
   {
@@ -60,6 +70,23 @@ const TOOLS: OpenAI.Chat.Completions.ChatCompletionTool[] = [
           },
         },
         required: ["consulta"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "calcular_estor_digital_a_medida",
+      description:
+        "Calcula cómo pedir un estor enrollable DIGITAL (estampado o foto) a una medida concreta: talla base que el " +
+        "cliente debe elegir en la web, precio orientativo e instrucciones, o si la medida está fuera de rango y hay que consultarla.",
+      parameters: {
+        type: "object",
+        properties: {
+          ancho_cm: { type: "number", description: "Ancho pedido en centímetros." },
+          largo_cm: { type: "number", description: "Largo (alto) pedido en centímetros. Omítelo si el cliente solo ha dado el ancho." },
+        },
+        required: ["ancho_cm"],
       },
     },
   },
@@ -202,6 +229,11 @@ export async function POST(request: NextRequest) {
         if (call.function.name === "buscar_en_catalogo") {
           const docs = await searchKnowledgeBase(String(args.consulta ?? message));
           result = docs.length > 0 ? docs : { info: "Sin resultados relevantes en la base de conocimiento." };
+        } else if (call.function.name === "calcular_estor_digital_a_medida") {
+          result = calcularEstorDigitalAMedida(
+            Number(args.ancho_cm),
+            args.largo_cm == null ? undefined : Number(args.largo_cm)
+          );
         } else if (call.function.name === "escalar_a_persona") {
           await triggerHandoff(conversation.id);
           handoffTriggered = true;
