@@ -43,7 +43,13 @@ export default function ConversacionesPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  // Contenedor scrollable de mensajes
+  const scrollRef = useRef<HTMLDivElement>(null);
+  // true si el admin está al final del chat (solo entonces hacemos auto-scroll)
+  const stickToBottom = useRef(true);
+  const lastCount = useRef(0);
+  // Zona visible real de la pantalla (descontando el teclado del móvil)
+  const [vv, setVv] = useState<{ height: number; top: number } | null>(null);
 
   // Si la URL incluye ?id=xxx (viene desde el enlace de Telegram), abrir esa conversación
   useEffect(() => {
@@ -83,13 +89,46 @@ export default function ConversacionesPage() {
     return () => { active = false; clearInterval(interval); };
   }, [selectedId]);
 
-  // Scroll al último mensaje
+  // Ajusta el chat a la zona visible cuando aparece/desaparece el teclado del móvil.
+  // Sin esto, el navegador empuja toda la capa hacia arriba y se pierden los mensajes.
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (!selectedId) return;
+    const v = window.visualViewport;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden"; // evita que la página de fondo haga scroll
+    if (!v) return () => { document.body.style.overflow = prevOverflow; };
+    const update = () => setVv({ height: v.height, top: v.offsetTop });
+    update();
+    v.addEventListener("resize", update);
+    v.addEventListener("scroll", update);
+    return () => {
+      v.removeEventListener("resize", update);
+      v.removeEventListener("scroll", update);
+      document.body.style.overflow = prevOverflow;
+      setVv(null);
+    };
+  }, [selectedId]);
+
+  // Auto-scroll solo cuando llegan mensajes nuevos y el admin ya estaba abajo.
+  // (El polling cada 3s ya no te devuelve al final si estás leyendo más arriba.)
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    if (messages.length !== lastCount.current && stickToBottom.current) {
+      el.scrollTop = el.scrollHeight;
+    }
+    lastCount.current = messages.length;
   }, [messages]);
+
+  // Al abrirse el teclado, mantener visible el último mensaje si estabas abajo
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el && stickToBottom.current) el.scrollTop = el.scrollHeight;
+  }, [vv]);
 
   async function handleSend() {
     if (!draft.trim() || !selectedId) return;
+    stickToBottom.current = true; // al enviar, siempre ver tu propio mensaje
     setSending(true);
     await fetch(`/api/conversations/${selectedId}/messages`, {
       method: "POST",
@@ -124,6 +163,8 @@ export default function ConversacionesPage() {
     setSelectedId(null);
     setSelected(null);
     setMessages([]);
+    stickToBottom.current = true;
+    lastCount.current = 0;
   }
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
@@ -131,15 +172,18 @@ export default function ConversacionesPage() {
   return (
     <>
       {/* ─────────────────────────────────────────────────────────────
-          OVERLAY DE CHAT — position:fixed directo al viewport.
-          No depende de ningún padre. Siempre ocupa exactamente la
-          pantalla visible. Se superpone sobre el sidebar y la lista.
+          OVERLAY DE CHAT — position:fixed, ajustado a la zona visible
+          (visualViewport) para que el teclado del móvil no lo desplace.
+          Cabecera arriba, mensajes en medio (scroll), input abajo.
          ───────────────────────────────────────────────────────────── */}
       {selectedId && selected && (
         <div
           style={{
             position: "fixed",
-            inset: 0,
+            left: 0,
+            right: 0,
+            top: vv ? vv.top : 0,
+            height: vv ? vv.height : "100dvh",
             zIndex: 50,
             display: "flex",
             flexDirection: "column",
@@ -181,11 +225,15 @@ export default function ConversacionesPage() {
             </div>
           </div>
 
-          {/* Área scrollable: mensajes arriba, input sticky abajo.
-              Con pocos mensajes → input aparece justo debajo de los mensajes.
-              Con muchos mensajes → el scroll activa y el input queda pegado al fondo. */}
-          <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column" }}>
-            {/* Mensajes — altura natural, se leen de arriba a abajo */}
+          {/* Área scrollable solo de mensajes (el input va fuera, fijo abajo) */}
+          <div
+            ref={scrollRef}
+            onScroll={(e) => {
+              const el = e.currentTarget;
+              stickToBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+            }}
+            style={{ flex: 1, minHeight: 0, overflowY: "auto", overscrollBehavior: "contain" }}
+          >
             <div className="p-4 flex flex-col gap-3">
               {messages.map((m) =>
                 m.role === "system" ? (
@@ -213,14 +261,11 @@ export default function ConversacionesPage() {
                   </div>
                 )
               )}
-              <div ref={messagesEndRef} />
             </div>
+          </div>
 
-            {/* Input sticky: se queda visible al fondo del área de scroll */}
-            <div
-              style={{ position: "sticky", bottom: 0 }}
-              className="p-3 border-t border-black/10 dark:border-white/10 flex gap-2 items-end bg-white dark:bg-[#1A1A1A]"
-            >
+          {/* Input fijo abajo, siempre justo encima del teclado */}
+          <div className="shrink-0 p-3 border-t border-black/10 dark:border-white/10 flex gap-2 items-end bg-white dark:bg-[#1A1A1A]">
               <textarea
                 value={draft}
                 onChange={(e) => {
@@ -248,7 +293,6 @@ export default function ConversacionesPage() {
               >
                 Enviar
               </button>
-            </div>
           </div>
         </div>
       )}

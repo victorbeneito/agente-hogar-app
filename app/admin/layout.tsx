@@ -14,6 +14,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: "#1A1A1A",
+  // Android: al abrir el teclado se redimensiona el contenido en vez de desplazarlo
+  interactiveWidget: "resizes-content",
 };
 
 const THEME_INIT_SCRIPT = `
